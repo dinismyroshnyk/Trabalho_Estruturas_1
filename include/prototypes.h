@@ -9,5 +9,3 @@
 void main_menu();
 void insert_any_key();
 void invalid_option();
-
-// fileManager headers

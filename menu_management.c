@@ -25,13 +25,13 @@ void main_menu()
         fflush(stdin);
         switch (option)
         {
-            case 1: number_of_lines(file, file_name);
+            case 1: 
                 break;
-            case 2: number_of_words(file, file_name);
+            case 2: 
                 break;
-            case 3: number_of_characters(file, file_name);
+            case 3: 
                 break;
-            case 4: number_of_user_defined_characters(file, file_name);
+            case 4: 
                 break;
             case 0: clear_screen();
                 break;
