@@ -40,12 +40,13 @@ int main()
 void main_menu_text()
 {
     clear_screen();
-    printf("\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 Manager Client \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n");
-    printf("[1] - Teste 1\n");
-    printf("[2] - Teste 2\n");
-    printf("[3] - Teste 3\n");
-    printf("[4] - Teste 4\n");
-    printf("[0] - Sair\n");
+    printf("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 Manager Client \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n");
+    printf("\u2502[1] - Teste 1\n");
+    printf("\u2502[2] - Teste 2\n");
+    printf("\u2502[3] - Teste 3\n");
+    printf("\u2502[4] - Teste 4\n");
+    printf("\u2502[0] - Sair\n");
+    printf("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n");
     printf("\n>>> ");
 }
 
@@ -55,6 +56,7 @@ void main_menu()
     int option;
     do
     {
+        option = -1;
         main_menu_text();
         scanf("%d", &option);
         clear_buffer();
