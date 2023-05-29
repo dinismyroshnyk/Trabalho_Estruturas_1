@@ -8,6 +8,8 @@
 // --- includes ---
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 
 // --- structs ---
 typedef struct
@@ -17,7 +19,15 @@ typedef struct
     char email[50];
     char phone[20];
     char nif[20];
+    bool has_card;
 } client;
+
+typedef struct
+{
+  char date[20];
+  int buy [50];
+  
+}store;
 
 
 // --- prototypes ---
@@ -41,12 +51,12 @@ void main_menu_text()
 {
     clear_screen();
     printf("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 Manager Client \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n");
-    printf("\u2502[1] - Teste 1\n");
-    printf("\u2502[2] - Teste 2\n");
-    printf("\u2502[3] - Teste 3\n");
-    printf("\u2502[4] - Teste 4\n");
-    printf("\u2502[0] - Sair\n");
-    printf("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n");
+    printf("\u2502  [1] -New Client                      \u2502\n");
+    printf("\u2502  [2] -Disable Card                 \u2502\n");
+    printf("\u2502  [3] -Teste 3                      \u2502\n");
+    printf("\u2502  [4] -Teste 4                      \u2502\n");
+    printf("\u2502  [0] -Sair                         \u2502\n");
+    printf("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n");
     printf("\n>>> ");
 }
 
