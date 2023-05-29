@@ -8,8 +8,8 @@
 // --- includes ---
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
-
 
 // --- structs ---
 typedef struct
@@ -24,9 +24,8 @@ typedef struct
 
 typedef struct
 {
-  char date[20];
-  int buy [50];
-  
+    char date[20];
+    int buy [50];
 }store;
 
 
@@ -35,6 +34,7 @@ void main_menu();
 void insert_any_key();
 void invalid_option();
 void clear_buffer();
+int read_option();
 
 // --- main function start---
 
@@ -66,9 +66,8 @@ void main_menu()
     int option;
     do
     {
-        option = -1;
         main_menu_text();
-        scanf("%d", &option);
+        option = read_option();
         clear_buffer();
         switch (option)
         {
@@ -121,4 +120,15 @@ void invalid_option()
     clear_screen();
     printf("Opção inválida!\n");
     insert_any_key();
+}
+
+int read_option()
+{
+    int option;
+    char input[50];
+    scanf("%s", input);
+    if (sscanf(input, "%d%*c", &option) != 1 || strlen(input) != strspn(input, "0123456789")) {
+        option = -1; // set option to an invalid value
+    };
+    return option;
 }
