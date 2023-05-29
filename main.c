@@ -9,6 +9,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// --- structs ---
+typedef struct
+{
+    int id;
+    char name[50];
+    char email[50];
+    char phone[20];
+    char nif[20];
+} client;
+
+
 // --- prototypes ---
 void main_menu();
 void insert_any_key();
@@ -16,6 +27,7 @@ void invalid_option();
 void clear_buffer();
 
 // --- main function start---
+
 int main()
 {
     main_menu();
@@ -28,6 +40,7 @@ int main()
 void main_menu_text()
 {
     clear_screen();
+    printf("\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 Manager Client \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n");
     printf("[1] - Teste 1\n");
     printf("[2] - Teste 2\n");
     printf("[3] - Teste 3\n");
@@ -39,7 +52,7 @@ void main_menu_text()
 // --- --- menu functions --- ---
 void main_menu()
 {
-    int option;;
+    int option;
     do
     {
         main_menu_text();
