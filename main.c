@@ -13,23 +13,39 @@
 
 // --- defines ---
 #define DIM 10
+#define MAX_PURCHASES 1000
 
 // --- structs ---
 typedef struct
 {
-    int id;
     char name[50];
-    char email[50];
-    int phone;
-    int nif;
-    bool has_card;
-} client;
+    char address[50];
+}store;
 
 typedef struct
 {
-    char date[20];
-    int buy [50];
-}store;
+    int value;
+    char date[8];
+    store store;
+} purchase;
+
+typedef struct
+{
+    int customer_id;
+    float total_spent;
+    int vouchers;
+    purchase purchases[MAX_PURCHASES];
+} Card;
+
+typedef struct
+{
+    char name[50];
+    char phone[9];
+    char email[50];
+    char nif[9];
+    bool has_card;
+    Card card;
+} client;
 
 
 // --- prototypes ---
@@ -46,23 +62,21 @@ client new_client()
 {
     client func;
     char resp;
-    printf("ID: ");
-    scanf("%d", &func.id);
     printf("Name: ");
     clear_buffer();
-    gets(func.name);
+    fgets(func.name, 50, stdin);
     printf("Email: ");
     clear_buffer();
-    scanf("%s",func.email);
+    fgets(func.email, 50, stdin);
     printf("Phone: ");
     clear_buffer();
-    scanf("%d", &func.phone);
+    fgets(func.phone, 9, stdin);
     printf("NIF: ");
     clear_buffer();
-    scanf("%d", &func.nif);
+    fgets(func.nif, 9, stdin);
     printf("Has Card(): ");
     clear_buffer();
-    scanf("%c", &resp);
+    fgets(&resp, 2, stdin);
     func.has_card = 's' == resp || 'S' == resp;
     return func;
 }
