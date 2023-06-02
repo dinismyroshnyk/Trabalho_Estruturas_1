@@ -11,64 +11,90 @@
 #include <string.h>
 #include <stdbool.h>
 
-// --- defines ---
-#define DIM 10
+// --- definitions ---
+#define MAX_PURCHASES 1000
 
-// --- structs ---
-typedef struct
-{
-    int id;
+// --- structures ---
+typedef struct Store {
     char name[50];
-    char email[50];
+    char address[50];
+} Store;
+
+typedef struct Purchase {
+    float value;
+    char date[8];
+    Store store;
+} Purchase;
+
+typedef struct Card {
+    int customer_id;
+    float total_spent;
+    int vouchers;
+    Purchase purchases[MAX_PURCHASES];
+} Card;
+
+typedef struct Client {
+    char name[50];
     int phone;
+    char email[50];
     int nif;
     bool has_card;
-} client;
-
-typedef struct
-{
-    char date[20];
-    int buy [50];
-}store;
+    Card card;
+} Client;
 
 
 // --- prototypes ---
+// --- --- main menu functions --- ---
 void main_menu();
-void costmers_menu();
-void save_menu();
+void main_menu_text();
+void register_new_client();
+void remove_client();
+void list_active_clients();
+void client_management_menu();
+void sort_by_total_spent();
+void save_as_csv_menu();
+void (*main_menu_options[])() =
+{
+    register_new_client, 
+    remove_client, 
+    list_active_clients, 
+    client_management_menu, 
+    sort_by_total_spent, 
+    save_as_csv_menu
+};
+// --- --- client management menu functions --- ---
+void client_management_menu_text();
+void edit_client();
+void add_purchase();
+void list_purchases();
+void purchase_details();
+void verify_vouchers();
+void (*client_management_menu_options[])() =
+{
+    edit_client,
+    add_purchase,
+    list_purchases,
+    purchase_details,
+    verify_vouchers
+};
+// --- --- save as csv menu functions --- ---
+void save_as_csv_menu_text();
+void save_1_store();
+void save_all_stores();
+void (*save_as_csv_menu_options[])() =
+{
+    save_1_store,
+    save_all_stores
+};
+
+// --- --- utility functions --- ---
 void insert_any_key();
 void invalid_option();
 void clear_buffer();
 int read_option();
-
-// --- structs functions ---
-client new_client()
-{
-    client func;
-    char resp;
-    printf("ID: ");
-    scanf("%d", &func.id);
-    printf("Name: ");
-    clear_buffer();
-    gets(func.name);
-    printf("Email: ");
-    clear_buffer();
-    scanf("%s",func.email);
-    printf("Phone: ");
-    clear_buffer();
-    scanf("%d", &func.phone);
-    printf("NIF: ");
-    clear_buffer();
-    scanf("%d", &func.nif);
-    printf("Has Card(): ");
-    clear_buffer();
-    scanf("%c", &resp);
-    func.has_card = 's' == resp || 'S' == resp;
-    return func;
-}
+void program_exit();
 
 // --- main function start---
-
 int main()
 {
     main_menu();
@@ -81,179 +107,160 @@ int main()
 void main_menu_text()
 {
     clear_screen();
-    printf("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 Manager Client \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n");
-    printf("\u2502  [1] - New Client                  \u2502\n");
-    printf("\u2502  [2] - Disable Card                \u2502\n");
-    printf("\u2502  [3] - List Customer               \u2502\n");
-    printf("\u2502  [4] - Costomer Menu               \u2502\n"); // --- menu de cliente ---
-    printf("\u2502  [5] - Order Customers ↗           \u2502\n");
-    printf("\u2502  [6] - Save as...                  \u2502\n"); // --- menu dde salvar ---
-    printf("\u2502  [0] - Sair                        \u2502\n");
-    printf("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n");
+    printf("[1] - Register new client\n");
+    printf("[2] - Remove client (deactivate card)\n");
+    printf("[3] - List active clients\n");
+    printf("[4] - Client management\n");
+    printf("[5] - Sort by total spent\n");
+    printf("[6] - Save as csv\n");
+    //printf("[7] - Register new store\n");
+    //printf("[8] - Remove store\n");
+    printf("[0] - Exit\n");
     printf("\n>>> ");
 }
 
-void customers_menu_text()
+void client_management_menu_text()
 {
     clear_screen();
-    printf("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 Client \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n");
-    printf("\u2502  [1] -  Edit Data                  \u2502\n");
-    printf("\u2502  [2] -  View All Purchases         \u2502\n");
-    printf("\u2502  [3] -  Bank Statement             \u2502\n");
-    printf("\u2502  [4] -  View Coupons Available     \u2502\n");
-    printf("\u2502  [0] -  Sair                       \u2502\n");
-    printf("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n");
+    printf("[1] - Edit client\n");
+    printf("[2] - Add purchase\n");
+    printf("[3] - List purchases\n");
+    printf("[4] - Purchases details\n");
+    printf("[5] - Verify vouchers\n");
+    printf("[0] - Back\n");
     printf("\n>>> ");
 }
 
-void save_menu_text()
+void save_as_csv_menu_text()
 {
     clear_screen();
-    printf("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 Save as... \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n");
-    printf("\u2502  [1] -  Save as .csv               \u2502\n");
-    printf("\u2502  [2] -  Save as .csv               \u2502\n");
-    printf("\u2502  [3] -  Save as .html              \u2502\n");
-    printf("\u2502  [0] -  Sair                       \u2502\n");
-    printf("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n");
+    printf("[1] - Save 1 store\n");
+    printf("[2] - Save all stores\n");
+    printf("[0] - Back\n");
     printf("\n>>> ");
 }
 
-// --- --- menu functions --- ---
+// --- --- main menu functions --- ---
 void main_menu()
 {
-   // client func[DIM]; // --- array de clientes ---
     int option;
     do
     {
         main_menu_text();
         option = read_option();
         clear_buffer();
-        switch (option)
+        if(option >= 1 && option <= 6)
         {
-        case 1:
-            clear_screen();
-            printf("Teste 1\n");
+            (*main_menu_options[option-1])();
             insert_any_key();
-            break;
-        case 2:
-            clear_screen();
-            printf("Teste 2\n");
-            insert_any_key();
-            break;
-        case 3:
-            clear_screen();
-            printf("Teste 3\n");
-            insert_any_key();
-            break;
-        case 4:
-            clear_screen();
-            costmers_menu();
-            
-            insert_any_key();
-            break;
-        case 5:
-            clear_screen();
-            printf("Teste 5\n");
-            insert_any_key();
-            break;
-        case 6:
-            clear_screen();
-            save_menu_text();
-            
-            insert_any_key();
-            break;
-        case 0:
-            clear_screen();
-            printf("Saindo...\n");
-            break;
-        default:
-            invalid_option();
-            break;
         }
+        else if (option == 0) program_exit();
+        else invalid_option();
     } while (option != 0);
 }
 
-void costmers_menu()
- {
-    int option;
-    do
-    {
-        customers_menu_text();
-        option = read_option();
-        clear_buffer();
-        switch (option)
-        {
-        case 1:
-            clear_screen();
-            printf("Teste 1\n");
-            insert_any_key();
-            break;
-        case 2:
-            clear_screen();
-            printf("Teste 2\n");
-            insert_any_key();
-            break;
-        case 3:
-            clear_screen();
-            printf("Teste 3\n");
-            insert_any_key();
-            break;
-        case 4:
-            clear_screen();
-            printf("Teste 4\n");
-            insert_any_key();
-            break;
-        case 0:
-            clear_screen();
-            printf("Saindo...\n");
-            break;
-        default:
-            invalid_option();
-            break;
-        } 
-    
-    }while (option != 0);
- }
+void register_new_client()
+{
+    clear_screen();
+    printf("Register new client\n");
+}
 
-void save_menu()
+void remove_client()
+{
+    clear_screen();
+    printf("Remove client\n");
+}
+
+void list_active_clients()
+{
+    clear_screen();
+    printf("List active clients\n");
+}
+
+void client_management_menu()
 {
     int option;
     do
     {
-        save_menu_text();
+        client_management_menu_text();
         option = read_option();
         clear_buffer();
-        switch (option)
+        if(option >= 1 && option <= 5)
         {
-        case 1:
-            clear_screen();
-            printf("Teste 1\n");
+            (*client_management_menu_options[option-1])();
             insert_any_key();
-            break;
-        case 2:
-            clear_screen();
-            printf("Teste 2\n");
-            insert_any_key();
-            break;
-        case 3:
-            clear_screen();
-            printf("Teste 3\n");
-            insert_any_key();
-            break;
-        case 4:
-            clear_screen();
-            printf("Teste 4\n");
-            insert_any_key();
-            break;
-        case 0:
-            clear_screen();
-            printf("Saindo...\n");
-            break;
-        default:
-            invalid_option();
-            break;
         }
+        else if (option == 0) main_menu();
+        else invalid_option();
     } while (option != 0);
+}
+
+void sort_by_total_spent()
+{
+    clear_screen();
+    printf("Sort by total spent\n");
+}
+
+void save_as_csv_menu()
+{
+    int option;
+    do
+    {
+        save_as_csv_menu_text();
+        option = read_option();
+        clear_buffer();
+        if(option >= 1 && option <= 2)
+        {
+            (*save_as_csv_menu_options[option-1])();
+            insert_any_key();
+        }
+        else if (option == 0) main_menu();
+        else invalid_option();
+    } while (option != 0);
+}
+
+// --- --- client management menu functions --- ---
+void edit_client()
+{
+    clear_screen();
+    printf("Edit client\n");
+}
+
+void add_purchase()
+{
+    clear_screen();
+    printf("Add purchase\n");
+}
+
+void list_purchases()
+{
+    clear_screen();
+    printf("List purchases\n");
+}
+
+void purchase_details()
+{
+    clear_screen();
+    printf("Purchase details\n");
+}
+
+void verify_vouchers()
+{
+    clear_screen();
+    printf("Verify vouchers\n");
+}
+
+// --- --- save as csv menu functions --- ---
+void save_1_store()
+{
+    clear_screen();
+    printf("Save 1 store\n");
+}
+
+void save_all_stores()
+{
+    clear_screen();
+    printf("Save all stores\n");
 }
 
 // --- --- utility functions --- ---
@@ -265,15 +272,22 @@ void clear_buffer()
 
 void insert_any_key()
 {
-    printf("Pressione qualquer tecla para continuar...");
+    printf("Press any key to continue...");
     getchar();
 }
 
 void invalid_option()
 {
     clear_screen();
-    printf("Opção inválida!\n");
+    printf("Invalid option!\n");
     insert_any_key();
+}
+
+void program_exit()
+{
+    clear_screen();
+    printf("Exiting...\n");
+    exit(0);
 }
 
 int read_option()
@@ -282,7 +296,7 @@ int read_option()
     char input[50];
     scanf("%s", input);
     if (sscanf(input, "%d%*c", &option) != 1 || strlen(input) != strspn(input, "0123456789")) {
-        option = -1; // set option to an invalid value
+        option = -1;
     };
     return option;
 }

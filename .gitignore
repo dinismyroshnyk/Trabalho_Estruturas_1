@@ -1,5 +1,7 @@
 # Ignored folders
 .vscode
+build
+.codescene
 
 # Prerequisites
 *.d
