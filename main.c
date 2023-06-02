@@ -40,9 +40,9 @@ typedef struct
 typedef struct
 {
     char name[50];
-    char phone[9];
+    int phone[9];
     char email[50];
-    char nif[9];
+    int nif[9];
     bool has_card;
     Card card;
 } client;
@@ -56,6 +56,9 @@ void insert_any_key();
 void invalid_option();
 void clear_buffer();
 int read_option();
+void tabelaClients(client func[], int n);
+void mostrarClientes(client func[], int n);
+
 
 // --- structs functions ---
 client new_client()
@@ -70,15 +73,24 @@ client new_client()
     fgets(func.email, 50, stdin);
     printf("Phone: ");
     clear_buffer();
-    fgets(func.phone, 9, stdin);
+    scanf("%d", &func.phone); // --- TODO: falta validaçao de  ---
     printf("NIF: ");
     clear_buffer();
-    fgets(func.nif, 9, stdin);
+    scanf("%d", &func.nif); // --- TODO: validaçao ---
     printf("Has Card(): ");
     clear_buffer();
     fgets(&resp, 2, stdin);
     func.has_card = 's' == resp || 'S' == resp;
     return func;
+}
+
+Card new_card(int i)
+{
+    Card card;
+    card.customer_id = i;
+    card.total_spent = 0;
+    card.vouchers = 0;
+    return card;
 }
 
 // --- main function start---
@@ -268,6 +280,44 @@ void save_menu()
             break;
         }
     } while (option != 0);
+}
+
+void tabelaClients(client func[], int n)
+{
+    int i;
+    for(i = 0; i < n; i++)
+    {
+        mostraFuncionario(func[i]);
+    }
+}
+
+void mostraClients(client func)
+{
+    printf("Name: %s\n", func.name);
+    printf("Email: %s\n", func.email);
+    printf("Phone: %s\n", func.phone);
+    printf("NIF: %s\n", func.nif);
+    printf("Card: %s\n", func.has_card);
+}
+
+void saveToBinary()
+{
+// save all information client, card,purche  binary file 
+
+    FILE *fp;
+    fp = fopen("client.dat", "ab");
+    if (fp == NULL)
+    {
+        printf("Erro ao abrir o arquivo.\n");
+        exit(1);
+    }
+    for (int i = 0; i < DIM; i++)
+    {
+       // fwrite(&func[i], sizeof(client), 1, fp);
+    }
+    fclose(fp);
+    printf("Dados gravados com sucesso!\n");
+    insert_any_key();
 }
 
 // --- --- utility functions --- ---
