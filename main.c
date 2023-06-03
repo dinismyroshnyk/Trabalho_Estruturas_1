@@ -52,7 +52,7 @@ void main_menu_text();                                  // WORKING // NOTE - THE
 void register_new_client(Client clients[]);             // WORKING // NOTE - MAY NEED TO BE REWORKED
 void remove_client(Client clients[]);                   // WORKING // NOTE - MAY NEED TO BE REWORKED
 void list_active_clients(Client clients[]);             // WORKING // NOTE - MAY NEED TO BE REWORKED
-void client_management_menu(Client clients[]);
+void client_management_menu(Client clients[]);          // WIP
 void sort_by_total_spent();
 void save_as_csv_menu();
 void (*main_menu_options[])() =
@@ -66,8 +66,8 @@ void (*main_menu_options[])() =
 };
 // --- --- client management menu functions --- ---
 void client_management_menu_text();                     // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
-void edit_client(Client clients[]);                                     // WIP
-void add_purchase();
+void edit_client(Client clients[]);                     // WORKING // NOTE - MAY NEED TO BE REWORKED
+void add_purchase(Client clients[]);                    // WIP
 void list_purchases();
 void purchase_details();
 void verify_vouchers();
@@ -87,6 +87,21 @@ void (*save_as_csv_menu_options[])() =
 {
     save_1_store,
     save_all_stores
+};
+// --- --- edit client menu functions --- ---
+void edit_client_menu_text();                           // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void edit_name(Client clients[], int customer_id);      // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_phone(Client clients[], int customer_id);     // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_email(Client clients[], int customer_id);     // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_nif(Client clients[], int customer_id);       // WORKING // NOTE - MAY NEED TO BE REWORKED
+void reactivate_card(Client clients[], int customer_id);// WORKING // NOTE - MAY NEED TO BE REWORKED
+void (*edit_client_menu_options[])() =                  // WORKING // NOTE - MAY NEED TO BE REWORKED
+{
+    edit_name,
+    edit_phone,
+    edit_email,
+    edit_nif,
+    reactivate_card
 };
 
 // --- --- utility functions --- ---
@@ -111,7 +126,7 @@ int main()
 
 // --- auxiliary functions ---
 // --- --- menu texts --- ---
-void main_menu_text()
+void main_menu_text()                                   // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
 {
     clear_screen();
     printf("[1] - Register new client\n");
@@ -126,7 +141,7 @@ void main_menu_text()
     printf("\n>>> ");
 }
 
-void client_management_menu_text()
+void client_management_menu_text()                      // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
 {
     clear_screen();
     printf("[1] - Edit client\n");
@@ -138,12 +153,24 @@ void client_management_menu_text()
     printf("\n>>> ");
 }
 
-void save_as_csv_menu_text()
+void save_as_csv_menu_text()                            // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
 {
     clear_screen();
     printf("[1] - Save 1 store\n");
     printf("[2] - Save all stores\n");
     printf("[0] - Back\n");
+    printf("\n>>> ");
+}
+
+void edit_client_menu_text()                            // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+{
+    clear_screen();
+    printf("[1] - Edit name\n");
+    printf("[2] - Edit phone\n");
+    printf("[3] - Edit email\n");
+    printf("[4] - Edit NIF\n");
+    printf("[5] - Reactivate card\n");
+    printf("[0] - Cancel operation\n");
     printf("\n>>> ");
 }
 
@@ -327,18 +354,36 @@ void save_as_csv_menu()
 }
 
 // --- --- client management menu functions --- ---
-void edit_client(Client clients[])                      // WIP
+void edit_client(Client clients[])                      // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
     clear_screen();
     printf("Edit client: \n");                          // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
     printf("Select the customer ID: ");
     int customer_id = validate_integer();
+    clear_buffer();
+    if (customer_id > read_counter_bin() || customer_id < 1)
+    {
+        printf("Invalid customer ID.\n");
+        insert_any_key();
+        main_menu();
+    }
+    edit_client_menu_text();
+    int option = validate_integer();
+    clear_buffer();
+    if(option >= 1 && option <= 5)
+    {
+        (*edit_client_menu_options[option-1])(clients, customer_id);
+        insert_any_key();
+    }
+    else if (option == 0) main_menu();
+    else invalid_option();
 }
 
-void add_purchase()
+void add_purchase(Client clients[])
 {
     clear_screen();
     printf("Add purchase\n");                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+
 }
 
 void list_purchases()
@@ -357,6 +402,69 @@ void verify_vouchers()
 {
     clear_screen();
     printf("Verify vouchers\n");                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+}
+
+// --- --- edit client menu functions --- ---
+void edit_name(Client clients[], int customer_id)       // WORKING // NOTE - MAY NEED TO BE REWORKED
+{
+    clear_screen();
+    printf("Edit name\n");                              // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("New name: ");
+    fgets(clients[customer_id - 1].name, 50, stdin);
+    save_clients_bin(clients, read_counter_bin());
+    printf("Name changed.\n");
+    insert_any_key();
+    client_management_menu(clients);
+}
+
+void edit_phone(Client clients[], int customer_id)      // WORKING // NOTE - MAY NEED TO BE REWORKED
+{
+    clear_screen();
+    printf("Edit phone\n");                             // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("New phone: ");
+    clients[customer_id - 1].phone = validate_integer();
+    clear_buffer();
+    save_clients_bin(clients, read_counter_bin());
+    printf("Phone changed.\n");
+    insert_any_key();
+    client_management_menu(clients);
+}
+
+void edit_email(Client clients[], int customer_id)      // WORKING // NOTE - MAY NEED TO BE REWORKED
+{
+    clear_screen();
+    printf("Edit email\n");                             // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("New email: ");
+    scanf("%s", clients[customer_id - 1].email);
+    clear_buffer();
+    save_clients_bin(clients, read_counter_bin());
+    printf("Email changed.\n");
+    insert_any_key();
+    client_management_menu(clients);
+}
+
+void edit_nif(Client clients[], int customer_id)        // WORKING // NOTE - MAY NEED TO BE REWORKED
+{
+    clear_screen();
+    printf("Edit NIF\n");                               // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("New NIF: ");
+    clients[customer_id - 1].nif = validate_integer();
+    clear_buffer();
+    save_clients_bin(clients, read_counter_bin());
+    printf("NIF changed.\n");
+    insert_any_key();
+    client_management_menu(clients);
+}
+
+void reactivate_card(Client clients[], int customer_id) // WORKING // NOTE - MAY NEED TO BE REWORKED
+{
+    clear_screen();
+    printf("Reactivate card\n");                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    clients[customer_id - 1].has_card = true;
+    save_clients_bin(clients, read_counter_bin());
+    printf("Card reactivated.\n");
+    insert_any_key();
+    client_management_menu(clients);
 }
 
 // --- --- save as csv menu functions --- ---
