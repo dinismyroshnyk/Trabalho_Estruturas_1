@@ -48,10 +48,10 @@ typedef struct Client {
 // --- prototypes ---
 // --- --- main menu functions --- ---
 void main_menu();
-void main_menu_text();
-void register_new_client(Client clients[]);
-void remove_client(Client clients[]);
-void list_active_clients(Client clients[]);
+void main_menu_text();                                  // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void register_new_client(Client clients[]);             // WORKING // NOTE - MAY NEED TO BE REWORKED
+void remove_client(Client clients[]);                   // WORKING // NOTE - MAY NEED TO BE REWORKED
+void list_active_clients(Client clients[]);             // WORKING // NOTE - MAY NEED TO BE REWORKED
 void client_management_menu(Client clients[]);
 void sort_by_total_spent();
 void save_as_csv_menu();
@@ -65,8 +65,8 @@ void (*main_menu_options[])() =
     save_as_csv_menu
 };
 // --- --- client management menu functions --- ---
-void client_management_menu_text();
-void edit_client();
+void client_management_menu_text();                     // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void edit_client(Client clients[]);                                     // WIP
 void add_purchase();
 void list_purchases();
 void purchase_details();
@@ -80,7 +80,7 @@ void (*client_management_menu_options[])() =
     verify_vouchers
 };
 // --- --- save as csv menu functions --- ---
-void save_as_csv_menu_text();
+void save_as_csv_menu_text();                           // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
 void save_1_store();
 void save_all_stores();
 void (*save_as_csv_menu_options[])() =
@@ -90,16 +90,16 @@ void (*save_as_csv_menu_options[])() =
 };
 
 // --- --- utility functions --- ---
-void insert_any_key();
-void invalid_option();
-void clear_buffer();
-int validate_integer();
-void program_exit();
-void save_counter_bin(int counter); // WIP
-int read_counter_bin(); // WIP
-void save_clients_bin(Client client[], int counter); // WIP
-Client* read_clients_bin(int* counter); // WIP
-void set_clients(Client clients[]); // WIP
+void insert_any_key();                                  // WORKING
+void invalid_option();                                  // WORKING
+void clear_buffer();                                    // WORKING
+int validate_integer();                                 // WORKING
+void program_exit();                                    // WORKING
+void save_counter_bin(int counter);                     // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
+int read_counter_bin();                                 // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
+void save_clients_bin(Client client[], int counter);    // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
+Client* read_clients_bin(int* counter);                 // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
+void set_clients(Client clients[]);                     // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
 
 // --- main function start---
 int main()
@@ -151,7 +151,7 @@ void save_as_csv_menu_text()
 void main_menu()
 {
     Client clients[MAX_CLIENTS];
-    set_clients(clients); // WIP
+    set_clients(clients);                               // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
     int option;
     do
     {
@@ -161,14 +161,14 @@ void main_menu()
         if(option >= 1 && option <= 6)
         {
             (*main_menu_options[option-1])(clients);
-            insert_any_key(); // FIXME - remove this line
+            insert_any_key();                           // TODO // FIXME - REMOVE THIS LINE WHEN THE PROGRAM IS FINISHED
         }
         else if (option == 0) program_exit();
         else invalid_option();
     } while (option != 0);
 }
 
-void register_new_client(Client clients[])
+void register_new_client(Client clients[])              // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
     int counter = read_counter_bin();
     char answer;
@@ -180,7 +180,7 @@ void register_new_client(Client clients[])
         insert_any_key();
         main_menu();
     }
-    printf("Register new client\n");
+    printf("Register new client\n");                    // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
     printf("Name: ");
     fgets(clients[counter].name, 50, stdin);
     printf("Phone: ");
@@ -220,10 +220,10 @@ void register_new_client(Client clients[])
     save_clients_bin(clients, counter);
 }
 
-void remove_client(Client clients[])
+void remove_client(Client clients[])                    // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
     clear_screen();
-    printf("Remove client\n");
+    printf("Remove client\n");                          // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
     printf("Customer ID: ");
     int customer_id = validate_integer();
     clear_buffer();
@@ -266,10 +266,10 @@ void remove_client(Client clients[])
     }
 }
 
-void list_active_clients(Client clients[])
+void list_active_clients(Client clients[])              // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
     clear_screen();
-    printf("List active clients:\n\n");
+    printf("List active clients:\n\n");                 // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
     for (int i = 0; i < read_counter_bin(); i++)
     {
         if (clients[i].has_card == true)
@@ -327,77 +327,79 @@ void save_as_csv_menu()
 }
 
 // --- --- client management menu functions --- ---
-void edit_client()
+void edit_client(Client clients[])                      // WIP
 {
     clear_screen();
-    printf("Edit client\n");
+    printf("Edit client: \n");                          // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("Select the customer ID: ");
+    int customer_id = validate_integer();
 }
 
 void add_purchase()
 {
     clear_screen();
-    printf("Add purchase\n");
+    printf("Add purchase\n");                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
 }
 
 void list_purchases()
 {
     clear_screen();
-    printf("List purchases\n");
+    printf("List purchases\n");                         // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
 }
 
 void purchase_details()
 {
     clear_screen();
-    printf("Purchase details\n");
+    printf("Purchase details\n");                       // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
 }
 
 void verify_vouchers()
 {
     clear_screen();
-    printf("Verify vouchers\n");
+    printf("Verify vouchers\n");                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
 }
 
 // --- --- save as csv menu functions --- ---
 void save_1_store()
 {
     clear_screen();
-    printf("Save 1 store\n");
+    printf("Save 1 store\n");                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
 }
 
 void save_all_stores()
 {
     clear_screen();
-    printf("Save all stores\n");
+    printf("Save all stores\n");                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
 }
 
 // --- --- utility functions --- ---
-void clear_buffer()
+void clear_buffer()                                     // WORKING
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void insert_any_key()
+void insert_any_key()                                   // WORKING
 {
     printf("Press any key to continue...");
     getchar();
 }
 
-void invalid_option()
+void invalid_option()                                   // WORKING
 {
     clear_screen();
     printf("Invalid option!\n");
     insert_any_key();
 }
 
-void program_exit()
+void program_exit()                                     // WORKING
 {
     clear_screen();
     printf("Exiting...\n");
     exit(0);
 }
 
-int validate_integer()
+int validate_integer()                                  // WORKING
 {
     int option;
     char input[50];
@@ -408,7 +410,7 @@ int validate_integer()
     return option;
 }
 
-void save_counter_bin(int counter)
+void save_counter_bin(int counter)                      // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *save_bin;
     save_bin = fopen("counter.bin", "wb");
@@ -421,7 +423,7 @@ void save_counter_bin(int counter)
     fclose(save_bin);
 }
 
-int read_counter_bin()
+int read_counter_bin()                                  // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *read_bin;
     int counter;
@@ -435,7 +437,7 @@ int read_counter_bin()
     return counter;
 }
 
-void save_clients_bin(Client clients[], int counter) // WIP
+void save_clients_bin(Client clients[], int counter)    // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *save_bin;
     save_bin = fopen("clients.bin", "wb");
@@ -449,7 +451,7 @@ void save_clients_bin(Client clients[], int counter) // WIP
 }
 
 
-Client* read_clients_bin(int* counter) // WIP
+Client* read_clients_bin(int* counter)                  // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *read_bin;
     Client* clients;
@@ -462,7 +464,7 @@ Client* read_clients_bin(int* counter) // WIP
     fseek(read_bin, 0, SEEK_END);
     long file_size = ftell(read_bin);
     rewind(read_bin);
-    *counter = (int)(file_size / sizeof(Client));
+    *counter = (int)((unsigned long)file_size / sizeof(Client));
     clients = (Client*)malloc(sizeof(Client) * (unsigned long)(*counter));
     if (clients == NULL) {
         printf("Memory allocation failed!\n");
@@ -473,7 +475,7 @@ Client* read_clients_bin(int* counter) // WIP
     return clients;
 }
 
-void set_clients(Client clients[]) // WIP
+void set_clients(Client clients[])                      // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
 {
     int counter = read_counter_bin();
     Client* read_clients = read_clients_bin(&counter);
