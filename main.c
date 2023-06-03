@@ -13,6 +13,9 @@
 
 // --- definitions ---
 #define MAX_PURCHASES 1000
+#define MAX_STORES 100
+#define MAX_CLIENTS 10
+#define DISCOUNT 0.15
 
 // --- structures ---
 typedef struct Store {
@@ -42,15 +45,14 @@ typedef struct Client {
     Card card;
 } Client;
 
-
 // --- prototypes ---
 // --- --- main menu functions --- ---
 void main_menu();
 void main_menu_text();
-void register_new_client();
-void remove_client();
-void list_active_clients();
-void client_management_menu();
+void register_new_client(Client clients[]);
+void remove_client(Client clients[]);
+void list_active_clients(Client clients[]);
+void client_management_menu(Client clients[]);
 void sort_by_total_spent();
 void save_as_csv_menu();
 void (*main_menu_options[])() =
@@ -91,8 +93,13 @@ void (*save_as_csv_menu_options[])() =
 void insert_any_key();
 void invalid_option();
 void clear_buffer();
-int read_option();
+int validate_integer();
 void program_exit();
+void save_counter_bin(int counter); // WIP
+int read_counter_bin(); // WIP
+void save_clients_bin(Client client[], int counter); // WIP
+Client* read_clients_bin(int* counter); // WIP
+void set_clients(Client clients[]); // WIP
 
 // --- main function start---
 int main()
@@ -143,51 +150,151 @@ void save_as_csv_menu_text()
 // --- --- main menu functions --- ---
 void main_menu()
 {
+    Client clients[MAX_CLIENTS];
+    set_clients(clients); // WIP
     int option;
     do
     {
         main_menu_text();
-        option = read_option();
+        option = validate_integer();
         clear_buffer();
         if(option >= 1 && option <= 6)
         {
-            (*main_menu_options[option-1])();
-            insert_any_key();
+            (*main_menu_options[option-1])(clients);
+            insert_any_key(); // FIXME - remove this line
         }
         else if (option == 0) program_exit();
         else invalid_option();
     } while (option != 0);
 }
 
-void register_new_client()
+void register_new_client(Client clients[])
 {
+    int counter = read_counter_bin();
+    char answer;
     clear_screen();
+    if (counter == MAX_CLIENTS)
+    {
+        printf("The maximum number of clients has been reached.\n");
+        printf("Please remove a client to register a new one.\n");
+        insert_any_key();
+        main_menu();
+    }
     printf("Register new client\n");
+    printf("Name: ");
+    fgets(clients[counter].name, 50, stdin);
+    printf("Phone: ");
+    clients[counter].phone = validate_integer();
+    clear_buffer();
+    printf("Email: ");
+    scanf("%s", clients[counter].email);
+    clear_buffer();
+    printf("NIF: ");
+    clients[counter].nif = validate_integer();
+    clear_buffer();
+    while (1)
+    {
+        printf("The client has a card? (y/n) ");
+        scanf("%c", &answer);
+        if (answer == 'y' || answer == 'Y') 
+        {
+            clients[counter].has_card = true;
+            clients[counter].card.customer_id = counter;
+            clients[counter].card.total_spent = 0;
+            clients[counter].card.vouchers = 0;
+            clear_buffer();
+            break;
+        }
+        if (answer == 'n' || answer == 'N') 
+        {
+            clients[counter].has_card = false;
+            clients[counter].card.customer_id = counter;
+            clients[counter].card.total_spent = 0;
+            clients[counter].card.vouchers = 0;
+            clear_buffer();
+            break;
+        }
+        else printf("Invalid answer. Please try again.\n");
+    };
+    save_counter_bin(++counter);
+    save_clients_bin(clients, counter);
 }
 
-void remove_client()
+void remove_client(Client clients[])
 {
     clear_screen();
     printf("Remove client\n");
+    printf("Customer ID: ");
+    int customer_id = validate_integer();
+    clear_buffer();
+    if (customer_id > read_counter_bin() || customer_id < 1)
+    {
+        printf("Invalid customer ID.\n");
+        insert_any_key();
+        main_menu();
+    }
+    if (clients[customer_id - 1].has_card == true)
+    {
+        printf("The client has a card. Are you sure you want to deactivate it? (y/n) ");
+        char answer;
+        scanf("%c", &answer);
+        clear_buffer();
+        if (answer == 'y' || answer == 'Y') 
+        {
+            clients[customer_id - 1].has_card = false;
+            save_clients_bin(clients, read_counter_bin());
+            printf("Card deactivated.\n");
+        }
+        else if (answer == 'n' || answer == 'N') 
+        {
+            printf("Operation canceled.\n");
+            insert_any_key();
+            main_menu();
+        }
+        else 
+        {
+            printf("Invalid answer. Operation canceled.\n");
+            insert_any_key();
+            main_menu();
+        }
+    }
+    else
+    {
+        printf("The client doesn't have a card.\n");
+        insert_any_key();
+        main_menu();
+    }
 }
 
-void list_active_clients()
+void list_active_clients(Client clients[])
 {
     clear_screen();
-    printf("List active clients\n");
+    printf("List active clients:\n\n");
+    for (int i = 0; i < read_counter_bin(); i++)
+    {
+        if (clients[i].has_card == true)
+        {
+            printf("Customer ID: %d\n", i+1);
+            printf("Name: %s", clients[i].name);
+            printf("Phone: %d\n", clients[i].phone);
+            printf("Email: %s\n", clients[i].email);
+            printf("NIF: %d\n", clients[i].nif);
+            printf("\n");
+        }
+    }
 }
 
-void client_management_menu()
+void client_management_menu(Client clients[])
 {
     int option;
     do
     {
         client_management_menu_text();
-        option = read_option();
+        option = validate_integer();
         clear_buffer();
         if(option >= 1 && option <= 5)
         {
-            (*client_management_menu_options[option-1])();
+            (*client_management_menu_options[option-1])(clients);
             insert_any_key();
         }
         else if (option == 0) main_menu();
@@ -207,7 +314,7 @@ void save_as_csv_menu()
     do
     {
         save_as_csv_menu_text();
-        option = read_option();
+        option = validate_integer();
         clear_buffer();
         if(option >= 1 && option <= 2)
         {
@@ -290,7 +397,7 @@ void program_exit()
     exit(0);
 }
 
-int read_option()
+int validate_integer()
 {
     int option;
     char input[50];
@@ -299,4 +406,79 @@ int read_option()
         option = -1;
     };
     return option;
+}
+
+void save_counter_bin(int counter)
+{
+    FILE *save_bin;
+    save_bin = fopen("counter.bin", "wb");
+    if (save_bin == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+    fwrite(&counter, sizeof(int), 1, save_bin);
+    fclose(save_bin);
+}
+
+int read_counter_bin()
+{
+    FILE *read_bin;
+    int counter;
+    read_bin = fopen("counter.bin", "rb");
+    if (read_bin == NULL)
+    {
+        return 0;
+    }
+    fread(&counter, sizeof(int), 1, read_bin);
+    fclose(read_bin);
+    return counter;
+}
+
+void save_clients_bin(Client clients[], int counter) // WIP
+{
+    FILE *save_bin;
+    save_bin = fopen("clients.bin", "wb");
+    if (save_bin == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+    fwrite(clients, sizeof(Client), (size_t)counter, save_bin);
+    fclose(save_bin);
+}
+
+
+Client* read_clients_bin(int* counter) // WIP
+{
+    FILE *read_bin;
+    Client* clients;
+    read_bin = fopen("clients.bin", "rb");
+    if (read_bin == NULL)
+    {
+        *counter = 0;
+        return NULL;
+    }
+    fseek(read_bin, 0, SEEK_END);
+    long file_size = ftell(read_bin);
+    rewind(read_bin);
+    *counter = (int)(file_size / sizeof(Client));
+    clients = (Client*)malloc(sizeof(Client) * (unsigned long)(*counter));
+    if (clients == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    fread(clients, sizeof(Client), (size_t)(*counter), read_bin);
+    fclose(read_bin);
+    return clients;
+}
+
+void set_clients(Client clients[]) // WIP
+{
+    int counter = read_counter_bin();
+    Client* read_clients = read_clients_bin(&counter);
+    for (int i = 0; i < counter; i++) {
+        clients[i] = read_clients[i];
+    }
+    free(read_clients);
 }
