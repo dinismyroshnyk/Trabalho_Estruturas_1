@@ -15,7 +15,7 @@
 // --- definitions ---
 #define MAX_PURCHASES 1000
 #define MAX_STORES 100
-#define MAX_CLIENTS 10
+#define MAX_CLIENTS 100
 #define DISCOUNT 0.15
 #define VOUCHER_VALUE 5
 
@@ -116,7 +116,7 @@ void invalid_option();                                                  // WORKI
 void clear_buffer();                                                    // WORKING
 int validate_integer();                                                 // WORKING
 float validate_float();                                                 // WORKING
-void program_exit();                                                    // WORKING
+void program_exit(Client clients[]);                                                    // WORKING
 void set_purchase_counter(Client clients[], int client_id);             // WORKING // NOTE - AT LEAST IT SEEMS TO BE
 void save_counter_bin(int counter);                                     // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
 int read_counter_bin();                                                 // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
@@ -131,7 +131,12 @@ int validate_customer_id(Client clients[]);
 // --- main function start---
 int main()
 {
-    Client clients[MAX_CLIENTS];
+    Client* clients = malloc(sizeof(Client) * MAX_CLIENTS);
+    if (clients == NULL)
+    {
+        printf("Error allocating memory!\n");
+        exit(1);
+    }
     main_menu(clients);
     return 0;
 }
@@ -196,7 +201,7 @@ void main_menu(Client clients[])                         //W
         option = validate_integer();
         clear_buffer();
         if(option >= 1 && option <= 6) (*main_menu_options[option-1])(clients);                           // TODO // FIXME - REMOVE THIS LINE WHEN THE PROGRAM IS FINISHED
-        else if (option == 0) program_exit();
+        else if (option == 0) program_exit(clients);
         else invalid_option();
     } while (option != 0);
 }
@@ -685,9 +690,10 @@ void invalid_option()                                                   // WORKI
     insert_any_key();
 }
 
-void program_exit()                                                     // WORKING
+void program_exit(Client clients[])                                                     // WORKING
 {
     clear_screen();
+    free(clients);
     printf("Exiting...\n");
     exit(0);
 }
