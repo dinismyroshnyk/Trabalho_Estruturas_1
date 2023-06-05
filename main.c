@@ -15,7 +15,7 @@
 // --- definitions ---
 #define MAX_PURCHASES 1000
 #define MAX_STORES 100
-#define MAX_CLIENTS 4
+#define MAX_CLIENTS 10
 #define DISCOUNT 0.15
 #define VOUCHER_VALUE 5
 
@@ -72,14 +72,14 @@ void (*main_menu_options[])() =
 };
 // --- --- client management menu functions --- ---
 void client_management_menu_text();                                     // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
-void edit_client(Client clients[]);                                     // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_client_menu(Client clients[]);                                     // WORKING // NOTE - MAY NEED TO BE REWORKED
 void add_purchase(Client clients[]);                                    // WORKING // NOTE - WILL BE REWORKED
 void list_purchases(Client clients[]);                                  // WORKING // NOTE - AT LEAST IT SEEMS TO BE
 void purchase_details(Client clients[]);                                // WORKING // NOTE - AT LEAST IT SEEMS TO BE
 void verify_vouchers(Client clients[]);                                 // WORKING // NOTE - AT LEAST IT SEEMS TO BE
 void (*client_management_menu_options[])() =
 {
-    edit_client,
+    edit_client_menu,
     add_purchase,
     list_purchases,
     purchase_details,
@@ -181,13 +181,12 @@ void edit_client_menu_text()                                            // WORKI
     printf("[3] - Edit email\n");
     printf("[4] - Edit NIF\n");
     printf("[5] - Reactivate card\n");
-    printf("[6] - Deduct vouchers\n");
     printf("[0] - Cancel operation\n");
     printf("\n>>> ");
 }
 
 // --- --- main menu functions --- ---
-void main_menu(Client clients[])
+void main_menu(Client clients[])                         //W
 {
     set_clients(clients);                               // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
     int option;
@@ -372,13 +371,13 @@ void save_as_csv_menu(Client clients[])
 }
 
 // --- --- client management menu functions --- ---
-void edit_client(Client clients[])                                      // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_client_menu(Client clients[])                                      // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
     clear_screen();
     int customer_id = validate_customer_id(clients), option;
-    edit_client_menu_text();
     do
     {
+        edit_client_menu_text();
         option = validate_integer();
         clear_buffer();
         if(option >= 1 && option <= 5) (*edit_client_menu_options[option-1])(clients, customer_id);
@@ -492,6 +491,7 @@ void list_purchases(Client clients[])                                   // WORKI
         printf("Store name: %s\n", clients[customer_id - 1].card.purchases[i].store.name);
         printf("Store address: %s\n", clients[customer_id - 1].card.purchases[i].store.address);
     }
+    insert_any_key();
 }
 
 void purchase_details(Client clients[])                                 // WORKING // NOTE - AT LEAST IT SEEMS TO BE
@@ -622,6 +622,7 @@ void save_1_store(Client clients[])                                     // WORKI
     }
     fclose(file);
     printf("CSV file created successfully.\n");
+    insert_any_key();
 }
 
 void save_all_stores(Client clients[])                                  // WORKING // NOTE - MAY NEED TO BE REWORKED
@@ -661,6 +662,7 @@ void save_all_stores(Client clients[])                                  // WORKI
     }
     fclose(file);
     printf("CSV file created successfully.\n");
+    insert_any_key();
 }
 
 // --- --- utility functions --- ---
