@@ -1,0 +1,11 @@
+Date,Purchase Value,Client Number,Store Name,Store Address
+5/6/2023,65.43,1,store 1,address 1
+5/6/2023,27.87,1,store 1,address 1
+5/6/2023,6.79,1,store 1,address 1
+5/6/2023,0.00,1,store 2,address 2
+5/6/2023,5.10,1,store 3,address 3
+5/6/2023,5.95,1,store 1,address 1
+5/6/2023,67.54,,store 1,address 1
+5/6/2023,2.45,,store 1,address 1
+5/6/2023,8.00,,store 4,address 4
+5/6/2023,425.00,3,store 3,address 3

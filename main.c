@@ -126,6 +126,7 @@ void set_clients(Client clients[]);                                     // WORKI
 void select_date(struct tm *date);
 int validate_date(int day, int month, int year);                        // WORKING
 bool is_date_in_range(struct tm date, struct tm start, struct tm end);  // WORKING
+int validate_customer_id();
 
 // --- main function start---
 int main()
@@ -195,11 +196,7 @@ void main_menu()
         main_menu_text();
         option = validate_integer();
         clear_buffer();
-        if(option >= 1 && option <= 6)
-        {
-            (*main_menu_options[option-1])(clients);
-            insert_any_key();                           // TODO // FIXME - REMOVE THIS LINE WHEN THE PROGRAM IS FINISHED
-        }
+        if(option >= 1 && option <= 6) (*main_menu_options[option-1])(clients);                           // TODO // FIXME - REMOVE THIS LINE WHEN THE PROGRAM IS FINISHED
         else if (option == 0) program_exit();
         else invalid_option();
     } while (option != 0);
@@ -331,12 +328,8 @@ void client_management_menu(Client clients[])
         client_management_menu_text();
         option = validate_integer();
         clear_buffer();
-        if(option >= 1 && option <= 5)
-        {
-            (*client_management_menu_options[option-1])(clients);
-            insert_any_key();
-        }
-        else if (option == 0) main_menu();
+        if(option >= 1 && option <= 5) (*client_management_menu_options[option-1])(clients);
+        else if (option == 0) break;
         else invalid_option();
     } while (option != 0);
 }
@@ -379,12 +372,8 @@ void save_as_csv_menu(Client clients[])
         save_as_csv_menu_text();
         option = validate_integer();
         clear_buffer();
-        if(option >= 1 && option <= 2)
-        {
-            (*save_as_csv_menu_options[option-1])(clients);
-            insert_any_key();
-        }
-        else if (option == 0) main_menu();
+        if(option >= 1 && option <= 2) (*save_as_csv_menu_options[option-1])(clients);
+        else if (option == 0) break;
         else invalid_option();
     } while (option != 0);
 }
@@ -392,27 +381,16 @@ void save_as_csv_menu(Client clients[])
 // --- --- client management menu functions --- ---
 void edit_client(Client clients[])                                      // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
-    clear_screen();
-    printf("Edit client: \n");                              // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
-    {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu();
-    }
+    int customer_id = validate_customer_id(), option;
     edit_client_menu_text();
-    int option = validate_integer();
-    clear_buffer();
-    if(option >= 1 && option <= 5)
+    do
     {
-        (*edit_client_menu_options[option-1])(clients, customer_id);
-        insert_any_key();
-    }
-    else if (option == 0) main_menu();
-    else invalid_option();
+        option = validate_integer();
+        clear_buffer();
+        if(option >= 1 && option <= 5) (*edit_client_menu_options[option-1])(clients, customer_id);
+        else if (option == 0) break;
+        else invalid_option();
+    } while (option != 0);
 }
 
 void add_purchase(Client clients[])                                     // WORKING // NOTE - WILL BE REWORKED
@@ -645,7 +623,7 @@ void save_1_store(Client clients[])                                     // WORKI
     fgets(store_address, 50, stdin);
     struct tm start_date, end_date;
     printf("Select the time interval");
-    printf("\nStart date: ");
+    printf("\nStart date: \n");
     select_date(&start_date);
     clear_buffer();
     printf("\nEnd date: \n");
@@ -886,4 +864,20 @@ void set_clients(Client clients[])                                      // WORKI
         clients[i] = read_clients[i];
     }
     free(read_clients);
+}
+
+int validate_customer_id()                 // WORKING
+{
+    clear_screen();
+    printf("Edit client: \n");
+    printf("Select the customer ID: ");
+    int customer_id = validate_integer();
+    clear_buffer();
+    if (customer_id > read_counter_bin() || customer_id < 1)
+    {
+        printf("Invalid customer ID.\n");
+        insert_any_key();
+        main_menu();
+    }
+    return customer_id;
 }
