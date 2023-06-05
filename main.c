@@ -260,15 +260,7 @@ void remove_client(Client clients[])                                    // WORKI
 {
     clear_screen();
     printf("Remove client\n");                          // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
-    printf("Customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
-    {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu();
-    }
+    int customer_id = validate_customer_id();
     if (clients[customer_id - 1].has_card == true)
     {
         printf("The client has a card. Are you sure you want to deactivate it? (y/n) ");
@@ -318,6 +310,7 @@ void list_active_clients(Client clients[])                              // WORKI
             printf("\n");
         }
     }
+    insert_any_key();
 }
 
 void client_management_menu(Client clients[])
@@ -362,6 +355,7 @@ void sort_by_total_spent(Client clients[])                              // WORKI
         printf("Total spent: %.2f\n", sorted_clients[i].card.total_spent);
         printf("\n");
     }
+    insert_any_key();
 }
 
 void save_as_csv_menu(Client clients[])
@@ -381,6 +375,7 @@ void save_as_csv_menu(Client clients[])
 // --- --- client management menu functions --- ---
 void edit_client(Client clients[])                                      // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
+    clear_screen();
     int customer_id = validate_customer_id(), option;
     edit_client_menu_text();
     do
@@ -399,15 +394,7 @@ void add_purchase(Client clients[])                                     // WORKI
     struct tm tm = *localtime(&t);
     clear_screen();
     printf("Add purchase\n");                                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
-    {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu();
-    }
+    int customer_id = validate_customer_id();
     printf("Purchase value: ");
     float purchase_value = validate_float();
     clear_buffer();
@@ -495,15 +482,7 @@ void list_purchases(Client clients[])                                   // WORKI
 {
     clear_screen();
     printf("List purchases\n");                             // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
-    {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu();
-    }
+    int customer_id = validate_customer_id();
     for (int i = 0; i < clients[customer_id - 1].card.purchase_counter; i++)
     {
         printf("Purchase ID: %d\n", i+1);
@@ -518,34 +497,20 @@ void purchase_details(Client clients[])                                 // WORKI
 {
     clear_screen();
     printf("Purchase details\n");                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
-    {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu();
-    }
+    int customer_id = validate_customer_id();
     printf("Total ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent);
     printf("Average ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent / clients[customer_id - 1].card.purchase_counter);
     printf("Spent vouchers: %d\n", clients[customer_id - 1].card.spent_vouchers);
+    insert_any_key();
 }
 
 void verify_vouchers(Client clients[])                                  // WORKING // NOTE - AT LEAST IT SEEMS TO BE
 {
     clear_screen();
     printf("Verify vouchers\n");                            // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
-    {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu();
-    }
+    int customer_id = validate_customer_id();
     printf("Vouchers: %d\n", clients[customer_id - 1].card.vouchers);
+    insert_any_key();
 }
 
 // --- --- edit client menu functions --- ---
@@ -868,8 +833,6 @@ void set_clients(Client clients[])                                      // WORKI
 
 int validate_customer_id()                 // WORKING
 {
-    clear_screen();
-    printf("Edit client: \n");
     printf("Select the customer ID: ");
     int customer_id = validate_integer();
     clear_buffer();
