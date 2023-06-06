@@ -135,6 +135,9 @@ void select_time_interval(struct tm* start_date, struct tm* end_date);
 int validate_customer_id(Client clients[]);
 float ask_user_vouchers(Client clients[], float purchase_value, int customer_id);
 float apply_vouchers(Client clients[], float purchase_value, int customer_id, int vouchers);
+void search_store(Client client, Purchase purchase, struct tm start_date, struct tm end_date, FILE * file, bool flag);
+void print_1_store(Client client, Purchase purchase, FILE * file);
+void print_all_stores(Client client, Purchase purchase, FILE * file);
 
 // --- main function start---
 int main()
@@ -569,15 +572,9 @@ void save_1_store(Client clients[])                                     // WORKI
         {
             if (strcasecmp(clients[i].card.purchases[j].store.name, store_name) == 0 && strcasecmp(clients[i].card.purchases[j].store.address, store_address) == 0)
             {
-                struct tm purchase_date;
-                purchase_date.tm_mday = clients[i].card.purchases[j].day;
-                purchase_date.tm_mon = clients[i].card.purchases[j].month;
-                purchase_date.tm_year = clients[i].card.purchases[j].year;
-                if (is_date_in_range(purchase_date, start_date, end_date))
-                {
-                    if (clients[i].has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value, clients[i].card.customer_id + 1);
-                    else fprintf(file, "%d/%d/%d,%.2f,\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value);
-                }
+                Client client = clients[i];
+                Purchase purchase = clients[i].card.purchases[j];
+                search_store(client, purchase, start_date, end_date, file, false);
             }
         }
     }
@@ -605,15 +602,9 @@ void save_all_stores(Client clients[])                                  // WORKI
     {
         for (int j = 0; j < clients[i].card.purchase_counter; j++)
         {
-            struct tm purchase_date;
-            purchase_date.tm_mday = clients[i].card.purchases[j].day;
-            purchase_date.tm_mon = clients[i].card.purchases[j].month;
-            purchase_date.tm_year = clients[i].card.purchases[j].year;
-            if (is_date_in_range(purchase_date, start_date, end_date))
-            {
-                if (clients[i].has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d,%s,%s\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value, clients[i].card.customer_id + 1, clients[i].card.purchases[j].store.name, clients[i].card.purchases[j].store.address);
-                else fprintf(file, "%d/%d/%d,%.2f,,%s,%s\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value, clients[i].card.purchases[j].store.name, clients[i].card.purchases[j].store.address);
-            }
+            Client client = clients[i];
+            Purchase purchase = clients[i].card.purchases[j];
+            search_store(client, purchase, start_date, end_date, file, true);
         }
     }
     fclose(file);
@@ -919,4 +910,29 @@ float apply_vouchers(Client clients[], float purchase_value, int customer_id, in
         clients[customer_id - 1].card.spent_vouchers += vouchers;
     }
     return purchase_value;
+}
+
+void search_store(Client client, Purchase purchase, struct tm start_date, struct tm end_date, FILE * file, bool flag)
+{
+    struct tm purchase_date;
+    purchase_date.tm_mday = purchase.day;
+    purchase_date.tm_mon = purchase.month;
+    purchase_date.tm_year = purchase.year;
+    if (is_date_in_range(purchase_date, start_date, end_date))
+    {
+        if (!flag) print_1_store(client, purchase, file);
+        else print_all_stores(client, purchase, file);
+    }
+}
+
+void print_1_store(Client client, Purchase purchase, FILE * file)
+{
+    if (client.has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d\n", purchase.day, purchase.month, purchase.year, purchase.value, client.card.customer_id + 1);
+    else fprintf(file, "%d/%d/%d,%.2f,\n", purchase.day, purchase.month, purchase.year, purchase.value);
+}
+
+void print_all_stores(Client client, Purchase purchase, FILE * file)
+{
+    if (client.has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d,%s,%s\n", purchase.day, purchase.month, purchase.year, purchase.value, client.card.customer_id + 1, purchase.store.name, purchase.store.address);
+    else fprintf(file, "%d/%d/%d,%.2f,,%s,%s\n", purchase.day, purchase.month, purchase.year, purchase.value, purchase.store.name, purchase.store.address);
 }
