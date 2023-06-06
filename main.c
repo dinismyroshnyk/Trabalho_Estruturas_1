@@ -14,7 +14,7 @@
 
 // --- definitions ---
 #define MAX_PURCHASES 1000
-#define MAX_STORES 100
+#define MAX_STORES 100 // NOTE: MAY BE REMOVED LATER
 #define MAX_CLIENTS 100
 #define DISCOUNT 0.15
 #define VOUCHER_VALUE 5
@@ -125,7 +125,13 @@ Client* read_clients_bin(int* counter);                                 // WORKI
 void set_clients(Client clients[]);                                     // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
 void select_date(struct tm *date);
 int validate_date(int day, int month, int year);                        // WORKING
+bool is_leap_year(int year);
+int get_max_day(int month, int year);
 bool is_date_in_range(struct tm date, struct tm start, struct tm end);  // WORKING
+bool is_year_in_range(struct tm date, struct tm start, struct tm end);
+bool is_month_in_range(struct tm date, struct tm start, struct tm end);
+bool is_day_in_range(struct tm date, struct tm start, struct tm end);
+void select_time_interval(struct tm* start_date, struct tm* end_date);
 int validate_customer_id(Client clients[]);
 
 // --- main function start---
@@ -191,16 +197,16 @@ void edit_client_menu_text()                                            // WORKI
 }
 
 // --- --- main menu functions --- ---
-void main_menu(Client clients[])                         //W
+void main_menu(Client clients[])                                        // DONE
 {
-    set_clients(clients);                               // TESTING // NOTE: WORKING BUT MAY CHANGE LATER
+    set_clients(clients);
     int option;
     do
     {
         main_menu_text();
         option = validate_integer();
         clear_buffer();
-        if(option >= 1 && option <= 6) (*main_menu_options[option-1])(clients);                           // TODO // FIXME - REMOVE THIS LINE WHEN THE PROGRAM IS FINISHED
+        if(option >= 1 && option <= 6) (*main_menu_options[option-1])(clients);
         else if (option == 0) program_exit(clients);
         else invalid_option();
     } while (option != 0);
@@ -217,7 +223,7 @@ void register_new_client(Client clients[])                              // WORKI
         insert_any_key();
         main_menu(clients);
     }
-    printf("Register new client\n");                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("Register new client\n");
     printf("Name: ");
     fgets(clients[counter].name, 50, stdin);
     printf("Phone: ");
@@ -587,19 +593,13 @@ void save_1_store(Client clients[])                                     // WORKI
 {
     clear_screen();
     printf("Save 1 store\n");  
-    char store_name[50], store_address[50];                             // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    char store_name[50], store_address[50];
     printf("Select the store name: ");
     fgets(store_name, 50, stdin);
     printf("Select the store address: ");
     fgets(store_address, 50, stdin);
     struct tm start_date, end_date;
-    printf("Select the time interval");
-    printf("\nStart date: \n");
-    select_date(&start_date);
-    clear_buffer();
-    printf("\nEnd date: \n");
-    select_date(&end_date);
-    clear_buffer();
+    select_time_interval(&start_date, &end_date);
     store_name[strcspn(store_name, "\n")] = '\0';
     store_address[strcspn(store_address, "\n")] = '\0';
     char filename[150];
@@ -614,14 +614,17 @@ void save_1_store(Client clients[])                                     // WORKI
     {
         for (int j = 0; j < clients[i].card.purchase_counter; j++)
         {
-            struct tm purchase_date;
-            purchase_date.tm_mday = clients[i].card.purchases[j].day;
-            purchase_date.tm_mon = clients[i].card.purchases[j].month;
-            purchase_date.tm_year = clients[i].card.purchases[j].year;
-            if (is_date_in_range(purchase_date, start_date, end_date))
+            if (strcasecmp(clients[i].card.purchases[j].store.name, store_name) == 0 && strcasecmp(clients[i].card.purchases[j].store.address, store_address) == 0)
             {
-                if (clients[i].has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value, clients[i].card.customer_id + 1);
-                else fprintf(file, "%d/%d/%d,%.2f,\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value);
+                struct tm purchase_date;
+                purchase_date.tm_mday = clients[i].card.purchases[j].day;
+                purchase_date.tm_mon = clients[i].card.purchases[j].month;
+                purchase_date.tm_year = clients[i].card.purchases[j].year;
+                if (is_date_in_range(purchase_date, start_date, end_date))
+                {
+                    if (clients[i].has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value, clients[i].card.customer_id + 1);
+                    else fprintf(file, "%d/%d/%d,%.2f,\n", purchase_date.tm_mday, purchase_date.tm_mon, purchase_date.tm_year, clients[i].card.purchases[j].value);
+                }
             }
         }
     }
@@ -636,12 +639,7 @@ void save_all_stores(Client clients[])                                  // WORKI
     printf("Save all stores\n");                                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
     struct tm start_date, end_date;
     printf("Select the time interval");
-    printf("\nStart date: \n");
-    select_date(&start_date);
-    clear_buffer();
-    printf("\nEnd date: \n");
-    select_date(&end_date);
-    clear_buffer();
+    select_time_interval(&start_date, &end_date);
     char filename[150];
     sprintf(filename, "all_stores_%d%d%d_%d%d%d.csv", start_date.tm_mday, start_date.tm_mon, start_date.tm_year, end_date.tm_mday, end_date.tm_mon, end_date.tm_year);
     FILE *file = fopen(filename, "w");
@@ -671,26 +669,26 @@ void save_all_stores(Client clients[])                                  // WORKI
 }
 
 // --- --- utility functions --- ---
-void clear_buffer()                                                     // WORKING
+void clear_buffer()                                                     // DONE
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void insert_any_key()                                                   // WORKING
+void insert_any_key()                                                   // DONE
 {
     printf("Press any key to continue...");
     getchar();
 }
 
-void invalid_option()                                                   // WORKING
+void invalid_option()                                                   // DONE
 {
     clear_screen();
     printf("Invalid option!\n");
     insert_any_key();
 }
 
-void program_exit(Client clients[])                                                     // WORKING
+void program_exit(Client clients[])                                     // DONE
 {
     clear_screen();
     free(clients);
@@ -698,7 +696,7 @@ void program_exit(Client clients[])                                             
     exit(0);
 }
 
-int validate_integer()                                                  // WORKING
+int validate_integer()                                                  // DONE
 {
     int option;
     char input[50];
@@ -709,7 +707,7 @@ int validate_integer()                                                  // WORKI
     return option;
 }
 
-float validate_float()                                                  // WORKING
+float validate_float()                                                  // DONE
 {
     float option;
     char input[50];
@@ -720,7 +718,7 @@ float validate_float()                                                  // WORKI
     return option;
 }
 
-void select_date(struct tm *date)                                       // WORKING
+void select_date(struct tm *date)                                       // DONE
 {
     bool is_valid_date = false;
     while (!is_valid_date) {
@@ -735,38 +733,97 @@ void select_date(struct tm *date)                                       // WORKI
     }
 }
 
-int validate_date(int day, int month, int year)                         // WORKING
+int validate_date(int day, int month, int year)                         // DONE
 {
-    if (year < 1900) return 0;
-    if (month < 1 || month > 12) return 0;
-    int max_day = 31;
-    if (month == 4 || month == 6 || month == 9 || month == 11) max_day = 30;
-    else if (month == 2) {
-        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) max_day = 29;
-        else max_day = 28;
-    }
-    if (day < 1 || day > max_day) return 0;
-    return 1;
-}
-
-bool is_date_in_range(struct tm date, struct tm start, struct tm end)   // WORKING
-{
-    if (date.tm_year < start.tm_year) return false;
-    if (date.tm_year > end.tm_year) return false;
-    if (date.tm_year == start.tm_year && date.tm_mon < start.tm_mon) return false;
-    if (date.tm_year == end.tm_year && date.tm_mon > end.tm_mon) return false;
-    if (date.tm_year == start.tm_year && date.tm_mon == start.tm_mon && date.tm_mday < start.tm_mday) return false;
-    if (date.tm_year == end.tm_year && date.tm_mon == end.tm_mon && date.tm_mday > end.tm_mday) return false;
+    if (year < 1900) return false;
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > get_max_day(month, year)) return false;
     return true;
 }
 
-void set_purchase_counter(Client clients[], int client_id)              // WORKING
+bool is_leap_year(int year)                                             // DONE
+{
+    if (year % 4 == 0) {
+        if (year % 100 != 0 || year % 400 == 0) return true;
+        else return false;
+    } else return false;
+}
+
+int get_max_day(int month, int year)                                    // DONE
+{
+    switch (month) {
+        case 2: return is_leap_year(year) ? 29 : 28;
+        case 4:
+        case 6:
+        case 9:
+        case 11: return 30;
+        default: return 31;
+    }
+}
+
+bool is_date_in_range(struct tm date, struct tm start, struct tm end)   // DONE
+{
+    if (!is_year_in_range(date, start, end)) return false;
+    if (!is_month_in_range(date, start, end)) return false;
+    if (!is_day_in_range(date, start, end)) return false;
+    return true;
+}
+
+bool is_year_in_range(struct tm date, struct tm start, struct tm end)   // DONE
+{
+    return date.tm_year >= start.tm_year && date.tm_year <= end.tm_year;
+}
+
+bool is_month_in_range(struct tm date, struct tm start, struct tm end)  // DONE
+{
+    if (date.tm_year == start.tm_year) {
+        return date.tm_mon >= start.tm_mon;
+    } else if (date.tm_year == end.tm_year) {
+        return date.tm_mon <= end.tm_mon;
+    } else {
+        return true;
+    }
+}
+
+bool is_day_in_range(struct tm date, struct tm start, struct tm end)    // DONE
+{
+    if (date.tm_year == start.tm_year && date.tm_mon == start.tm_mon) {
+        return date.tm_mday >= start.tm_mday;
+    } else if (date.tm_year == end.tm_year && date.tm_mon == end.tm_mon) {
+        return date.tm_mday <= end.tm_mday;
+    } else {
+        return true;
+    }
+}
+
+void select_time_interval(struct tm* start_date, struct tm* end_date)   // DONE
+{
+    bool is_valid_interval = false;
+    printf("Select the time interval");
+    printf("\nStart date: \n");
+    select_date(start_date);
+    clear_buffer();
+    printf("\nEnd date: \n");
+    select_date(end_date);
+    clear_buffer();
+    if (start_date->tm_year <= end_date->tm_year)
+        if (start_date->tm_mon <= end_date->tm_mon)
+            if (start_date->tm_mday <= end_date->tm_mday)
+                is_valid_interval = true;
+    if (!is_valid_interval) 
+    {
+        printf("Invalid interval. Please enter a valid interval.\n");
+        select_time_interval(start_date, end_date);
+    }
+}
+
+void set_purchase_counter(Client clients[], int client_id)              // DONE
 {
     for (int i = 0; i < MAX_PURCHASES; i++) clients[client_id - 1].card.purchase_counter = 0;
     save_clients_bin(clients, read_counter_bin());
 }
 
-void save_counter_bin(int counter)                                      // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
+void save_counter_bin(int counter)                                      // DONE // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *save_bin;
     save_bin = fopen("counter.bin", "wb");
@@ -779,7 +836,7 @@ void save_counter_bin(int counter)                                      // WORKI
     fclose(save_bin);
 }
 
-int read_counter_bin()                                                  // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
+int read_counter_bin()                                                  // DONE // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *read_bin;
     int counter;
@@ -793,7 +850,7 @@ int read_counter_bin()                                                  // WORKI
     return counter;
 }
 
-void save_clients_bin(Client clients[], int counter)                    // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
+void save_clients_bin(Client clients[], int counter)                    // DONE // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *save_bin;
     save_bin = fopen("clients.bin", "wb");
@@ -806,7 +863,7 @@ void save_clients_bin(Client clients[], int counter)                    // WORKI
     fclose(save_bin);
 }
 
-Client* read_clients_bin(int* counter)                                  // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
+Client* read_clients_bin(int* counter)                                  // DONE // NOTE: WORKING BUT MAY CHANGE LATER
 {
     FILE *read_bin;
     Client* clients;
@@ -830,7 +887,7 @@ Client* read_clients_bin(int* counter)                                  // WORKI
     return clients;
 }
 
-void set_clients(Client clients[])                                      // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
+void set_clients(Client clients[])                                      // DONE // NOTE: WORKING BUT MAY CHANGE LATER
 {
     int counter = read_counter_bin();
     Client* read_clients = read_clients_bin(&counter);
@@ -840,7 +897,7 @@ void set_clients(Client clients[])                                      // WORKI
     free(read_clients);
 }
 
-int validate_customer_id(Client clients[])                 // WORKING
+int validate_customer_id(Client clients[])                              // DONE
 {
     printf("Select the customer ID: ");
     int customer_id = validate_integer();
@@ -853,3 +910,4 @@ int validate_customer_id(Client clients[])                 // WORKING
     }
     return customer_id;
 }
+
