@@ -133,6 +133,8 @@ bool is_month_in_range(struct tm date, struct tm start, struct tm end);
 bool is_day_in_range(struct tm date, struct tm start, struct tm end);
 void select_time_interval(struct tm* start_date, struct tm* end_date);
 int validate_customer_id(Client clients[]);
+float ask_user_vouchers(Client clients[], float purchase_value, int customer_id);
+float apply_vouchers(Client clients[], float purchase_value, int customer_id, int vouchers);
 
 // --- main function start---
 int main()
@@ -427,57 +429,9 @@ void add_purchase(Client clients[])                                     // WORKI
     clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].store.address[strcspn(clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].store.address, "\n")] = '\0';
     if (clients[customer_id - 1].has_card == true)
     {
-        purchase_value -= purchase_value * DISCOUNT;
+        purchase_value -= (float) (purchase_value * DISCOUNT);
         printf("Discount applied, the purchase value is now: %.2f\n", purchase_value);
-        if (clients[customer_id - 1].card.vouchers > 0)
-        {
-            while (1)
-            {
-                printf("You have %d vouchers, do you want to use them? (y/n)", clients[customer_id - 1].card.vouchers);
-                char answer;
-                scanf("%c", &answer);
-                clear_buffer();
-                if (answer == 'y' || answer == 'Y')
-                {
-                    printf("How many vouchers do you want to use? ");
-                    int vouchers = validate_integer();
-                    clear_buffer();
-                    if (vouchers > clients[customer_id - 1].card.vouchers)
-                    {
-                        printf("Not enough vouchers.\n");
-                        insert_any_key();
-                    }
-                    else
-                    {
-                        purchase_value -= (float)vouchers * VOUCHER_VALUE;
-                        if (purchase_value < 0)
-                        {
-                            purchase_value = 0;
-                            printf("Voucher(s) used, you are not entitled to change.\n");
-                            clients[customer_id - 1].card.spent_vouchers += vouchers;
-                        }
-                        else
-                        {
-                            printf("Voucher(s) used, the purchase value is now: %.2f\n", purchase_value);
-                            clients[customer_id - 1].card.spent_vouchers += vouchers;
-                        }
-                        break;
-                    }
-                }
-                else if (answer == 'n' || answer == 'N')
-                {
-                    printf("Voucher(s) not used.\n");
-                    break;
-                }
-                else
-                {
-                    printf("Invalid answer.\n");
-                    insert_any_key();
-                }
-            }
-        }
-        clients[customer_id - 1].card.total_spent += purchase_value;
-        clients[customer_id - 1].card.vouchers = (int)(clients[customer_id - 1].card.total_spent / 50.0 - clients[customer_id - 1].card.spent_vouchers);
+        if (clients[customer_id - 1].card.vouchers > 0) purchase_value = ask_user_vouchers(clients, purchase_value, customer_id);
     }else clients[customer_id - 1].card.total_spent += purchase_value;
     clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].value += purchase_value;
     clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].day = tm.tm_mday;
@@ -485,7 +439,6 @@ void add_purchase(Client clients[])                                     // WORKI
     clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].year = tm.tm_year + 1900;
     clients[customer_id - 1].card.purchase_counter++;
     save_clients_bin(clients, read_counter_bin());
-
     insert_any_key();
 }
 
@@ -511,7 +464,7 @@ void purchase_details(Client clients[])                                 // WORKI
     printf("Purchase details\n");                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
     int customer_id = validate_customer_id(clients);
     printf("Total ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent);
-    printf("Average ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent / clients[customer_id - 1].card.purchase_counter);
+    printf("Average ammount spent: %.2f\n", (float)clients[customer_id - 1].card.total_spent / (float)clients[customer_id - 1].card.purchase_counter);
     printf("Spent vouchers: %d\n", clients[customer_id - 1].card.spent_vouchers);
     insert_any_key();
 }
@@ -911,3 +864,59 @@ int validate_customer_id(Client clients[])                              // DONE
     return customer_id;
 }
 
+float ask_user_vouchers(Client clients[], float purchase_value, int customer_id) // DONE
+{
+    while (1)
+            {
+                printf("You have %d vouchers, do you want to use them? (y/n)", clients[customer_id - 1].card.vouchers);
+                char answer;
+                scanf("%c", &answer);
+                clear_buffer();
+                if (answer == 'y' || answer == 'Y')
+                {
+                    printf("How many vouchers do you want to use? ");
+                    int vouchers = validate_integer();
+                    clear_buffer();
+                    if (vouchers > clients[customer_id - 1].card.vouchers)
+                    {
+                        printf("Not enough vouchers.\n");
+                        insert_any_key();
+                    }
+                    else
+                    {
+                        purchase_value -= (float)vouchers * VOUCHER_VALUE;
+                        purchase_value = apply_vouchers(clients, purchase_value, customer_id, vouchers);
+                        break;
+                    }
+                }
+                else if (answer == 'n' || answer == 'N')
+                {
+                    printf("Voucher(s) not used.\n");
+                    break;
+                }
+                else
+                {
+                    printf("Invalid answer.\n");
+                    insert_any_key();
+                }
+            }
+    clients[customer_id - 1].card.total_spent += purchase_value;
+    clients[customer_id - 1].card.vouchers = (int)(clients[customer_id - 1].card.total_spent / 50.0 - clients[customer_id - 1].card.spent_vouchers);
+    return purchase_value;
+}
+
+float apply_vouchers(Client clients[], float purchase_value, int customer_id, int vouchers) // DONE
+{
+    if (purchase_value < 0)
+    {
+        purchase_value = 0;
+        printf("Voucher(s) used, you are not entitled to change.\n");
+        clients[customer_id - 1].card.spent_vouchers += vouchers;
+    }
+    else
+    {
+        printf("Voucher(s) used, the purchase value is now: %.2f\n", purchase_value);
+        clients[customer_id - 1].card.spent_vouchers += vouchers;
+    }
+    return purchase_value;
+}
