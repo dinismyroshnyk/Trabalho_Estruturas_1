@@ -132,7 +132,7 @@ bool is_year_in_range(struct tm date, struct tm start, struct tm end);
 bool is_month_in_range(struct tm date, struct tm start, struct tm end);
 bool is_day_in_range(struct tm date, struct tm start, struct tm end);
 void select_time_interval(struct tm* start_date, struct tm* end_date);
-int validate_customer_id(Client clients[]);
+int validate_customer_id();
 float ask_user_vouchers(Client clients[], float purchase_value, int customer_id);
 float apply_vouchers(Client clients[], float purchase_value, int customer_id, int vouchers);
 void search_store(Client client, Purchase purchase, struct tm start_date, struct tm end_date, FILE * file, bool flag);
@@ -586,7 +586,7 @@ void save_1_store(Client clients[])                                     // WORKI
 void save_all_stores(Client clients[])                                  // WORKING // NOTE - MAY NEED TO BE REWORKED
 {
     clear_screen();
-    printf("Save all stores\n");                                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("Save all stores\n");
     struct tm start_date, end_date;
     printf("Select the time interval");
     select_time_interval(&start_date, &end_date);
@@ -841,18 +841,21 @@ void set_clients(Client clients[])                                      // DONE 
     free(read_clients);
 }
 
-int validate_customer_id(Client clients[])                              // DONE
+int validate_customer_id()                              // DONE
 {
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
+    do
     {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu(clients);
-    }
-    return customer_id;
+        printf("Select the customer ID: ");
+        int customer_id = validate_integer();
+        clear_buffer();
+        if (customer_id > read_counter_bin() || customer_id < 1)
+        {
+            printf("Invalid customer ID.\n");
+            insert_any_key();
+            continue;
+        }
+        return customer_id;
+    } while (1);
 }
 
 float ask_user_vouchers(Client clients[], float purchase_value, int customer_id) // DONE
