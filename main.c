@@ -52,14 +52,14 @@ typedef struct Client {
 
 // --- prototypes ---
 // --- --- main menu functions --- ---
-void main_menu(Client clients[]);                                      // WORKING // NOTE - MAY NEED TO BE REWORKED
-void main_menu_text();                                                  // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
-void register_new_client(Client clients[]);                             // WORKING // NOTE - MAY NEED TO BE REWORKED
-void remove_client(Client clients[]);                                   // WORKING // NOTE - MAY NEED TO BE REWORKED
-void list_active_clients(Client clients[]);                             // WORKING // NOTE - MAY NEED TO BE REWORKED
-void client_management_menu(Client clients[]);                          // WORKING // NOTE - MAY NEED TO BE REWORKED
-void sort_by_total_spent(Client clients[]);                             // WORKING // NOTE - AT LEAST IT SEEMS TO BE
-void save_as_csv_menu(Client clients[]);                                // WORKING // NOTE - MAY NEED TO BE REWORKED
+void main_menu(Client clients[]);
+void main_menu_text();
+void register_new_client(Client clients[]);
+void remove_client(Client clients[]);
+void list_active_clients(Client clients[]);
+void client_management_menu(Client clients[]);
+void sort_by_total_spent(Client clients[]);
+void save_as_csv_menu(Client clients[]);
 void (*main_menu_options[])() =
 {
     register_new_client, 
@@ -70,12 +70,12 @@ void (*main_menu_options[])() =
     save_as_csv_menu
 };
 // --- --- client management menu functions --- ---
-void client_management_menu_text();                                     // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
-void edit_client_menu(Client clients[]);                                     // WORKING // NOTE - MAY NEED TO BE REWORKED
-void add_purchase(Client clients[]);                                    // WORKING // NOTE - WILL BE REWORKED
-void list_purchases(Client clients[]);                                  // WORKING // NOTE - AT LEAST IT SEEMS TO BE
-void purchase_details(Client clients[]);                                // WORKING // NOTE - AT LEAST IT SEEMS TO BE
-void verify_vouchers(Client clients[]);                                 // WORKING // NOTE - AT LEAST IT SEEMS TO BE
+void client_management_menu_text();
+void edit_client_menu(Client clients[]);
+void add_purchase(Client clients[]);
+void list_purchases(Client clients[]);
+void purchase_details(Client clients[]);
+void verify_vouchers(Client clients[]);
 void (*client_management_menu_options[])() =
 {
     edit_client_menu,
@@ -85,22 +85,22 @@ void (*client_management_menu_options[])() =
     verify_vouchers
 };
 // --- --- save as csv menu functions --- ---
-void save_as_csv_menu_text();                                           // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
-void save_1_store(Client clients[]);                                    // WORKING // NOTE - MAY NEED TO BE REWORKED
-void save_all_stores(Client clients[]);                                 // WORKING // NOTE - MAY NEED TO BE REWORKED
+void save_as_csv_menu_text();
+void save_1_store(Client clients[]);
+void save_all_stores(Client clients[]);
 void (*save_as_csv_menu_options[])() =
 {
     save_1_store,
     save_all_stores
 };
 // --- --- edit client menu functions --- ---
-void edit_client_menu_text();                                           // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
-void edit_name(Client clients[], int customer_id);                      // WORKING // NOTE - MAY NEED TO BE REWORKED
-void edit_phone(Client clients[], int customer_id);                     // WORKING // NOTE - MAY NEED TO BE REWORKED
-void edit_email(Client clients[], int customer_id);                     // WORKING // NOTE - MAY NEED TO BE REWORKED
-void edit_nif(Client clients[], int customer_id);                       // WORKING // NOTE - MAY NEED TO BE REWORKED
-void reactivate_card(Client clients[], int customer_id);                // WORKING // NOTE - MAY NEED TO BE REWORKED
-void (*edit_client_menu_options[])() =                                  // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_client_menu_text();
+void edit_name(Client clients[], int customer_id);
+void edit_phone(Client clients[], int customer_id);
+void edit_email(Client clients[], int customer_id);
+void edit_nif(Client clients[], int customer_id);
+void reactivate_card(Client clients[], int customer_id);
+void (*edit_client_menu_options[])() =
 {
     edit_name,
     edit_phone,
@@ -110,31 +110,35 @@ void (*edit_client_menu_options[])() =                                  // WORKI
 };
 
 // --- --- utility functions --- ---
-void insert_any_key();                                                  // WORKING
-void invalid_option();                                                  // WORKING
-void clear_buffer();                                                    // WORKING
-int validate_integer();                                                 // WORKING
-float validate_float();                                                 // WORKING
-void program_exit(Client clients[]);                                                    // WORKING
-void set_purchase_counter(Client clients[], int client_id);             // WORKING // NOTE - AT LEAST IT SEEMS TO BE
-void save_counter_bin(int counter);                                     // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
-int read_counter_bin();                                                 // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
-void save_clients_bin(Client client[], int counter);                    // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
-Client* read_clients_bin(int* counter);                                 // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
-void set_clients(Client clients[]);                                     // WORKING // NOTE: WORKING BUT MAY CHANGE LATER
+void insert_any_key();
+void invalid_option();
+void clear_buffer();
+int validate_integer();
+float validate_float();
+void program_exit(Client clients[]);
+void set_purchase_counter(Client clients[], int client_id);
+void save_counter_bin(int counter);
+int read_counter_bin();
+void save_clients_bin(Client client[], int counter);
+Client* read_clients_bin(int* counter);
+void set_clients(Client clients[]);
 void select_date(struct tm *date);
-int validate_date(int day, int month, int year);                        // WORKING
+int validate_date(int day, int month, int year);
 bool is_leap_year(int year);
 int get_max_day(int month, int year);
-bool is_date_in_range(struct tm date, struct tm start, struct tm end);  // WORKING
+bool is_date_in_range(struct tm date, struct tm start, struct tm end);
 bool is_year_in_range(struct tm date, struct tm start, struct tm end);
 bool is_month_in_range(struct tm date, struct tm start, struct tm end);
 bool is_day_in_range(struct tm date, struct tm start, struct tm end);
 void select_time_interval(struct tm* start_date, struct tm* end_date);
-int validate_customer_id(Client clients[]);
+int validate_customer_id();
+float ask_user_vouchers(Client clients[], float purchase_value, int customer_id);
+float apply_vouchers(Client clients[], float purchase_value, int customer_id, int vouchers);
 void search_store(Client client, Purchase purchase, struct tm start_date, struct tm end_date, FILE * file, bool flag);
 void print_1_store(Client client, Purchase purchase, FILE * file);
 void print_all_stores(Client client, Purchase purchase, FILE * file);
+int validate_phone_number(Client clients[], int counter);
+int validate_nif(Client clients[], int counter);
 
 // --- main function start---
 int main()
@@ -152,7 +156,7 @@ int main()
 
 // --- auxiliary functions ---
 // --- --- menu texts --- ---
-void main_menu_text()                                                   // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void main_menu_text()
 {
     clear_screen();
     printf("[1] - Register new client\n");
@@ -165,7 +169,7 @@ void main_menu_text()                                                   // WORKI
     printf("\n>>> ");
 }
 
-void client_management_menu_text()                                      // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void client_management_menu_text()
 {
     clear_screen();
     printf("[1] - Edit client\n");
@@ -177,7 +181,7 @@ void client_management_menu_text()                                      // WORKI
     printf("\n>>> ");
 }
 
-void save_as_csv_menu_text()                                            // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void save_as_csv_menu_text()
 {
     clear_screen();
     printf("[1] - Save 1 store\n");
@@ -186,7 +190,7 @@ void save_as_csv_menu_text()                                            // WORKI
     printf("\n>>> ");
 }
 
-void edit_client_menu_text()                                            // WORKING // NOTE - THE STYLE OF THE MENU MAY BE CHANGED LATER
+void edit_client_menu_text()
 {
     clear_screen();
     printf("[1] - Edit name\n");
@@ -199,7 +203,7 @@ void edit_client_menu_text()                                            // WORKI
 }
 
 // --- --- main menu functions --- ---
-void main_menu(Client clients[])                                        // DONE
+void main_menu(Client clients[])
 {
     set_clients(clients);
     int option;
@@ -214,7 +218,7 @@ void main_menu(Client clients[])                                        // DONE
     } while (option != 0);
 }
 
-void register_new_client(Client clients[])                              // WORKING // NOTE - MAY NEED TO BE REWORKED
+void register_new_client(Client clients[])
 {
     int counter = read_counter_bin();
     char answer;
@@ -228,15 +232,11 @@ void register_new_client(Client clients[])                              // WORKI
     printf("Register new client\n");
     printf("Name: ");
     fgets(clients[counter].name, 50, stdin);
-    printf("Phone: ");
-    clients[counter].phone = validate_integer();
-    clear_buffer();
+    clients[counter].phone = validate_phone_number(clients, counter);
     printf("Email: ");
     scanf("%s", clients[counter].email);
     clear_buffer();
-    printf("NIF: ");
-    clients[counter].nif = validate_integer();
-    clear_buffer();
+    clients[counter].nif = validate_nif(clients, counter);
     while (1)
     {
         printf("The client has a card? (y/n) ");
@@ -267,7 +267,7 @@ void register_new_client(Client clients[])                              // WORKI
     save_clients_bin(clients, counter);
 }
 
-void remove_client(Client clients[])                                    // WORKING // NOTE - MAY NEED TO BE REWORKED
+void remove_client(Client clients[])
 {
     clear_screen();
     printf("Remove client\n");
@@ -305,7 +305,7 @@ void remove_client(Client clients[])                                    // WORKI
     }
 }
 
-void list_active_clients(Client clients[])                              // WORKING // NOTE - MAY NEED TO BE REWORKED
+void list_active_clients(Client clients[])
 {
     clear_screen();
     printf("List active clients:\n\n");
@@ -338,7 +338,7 @@ void client_management_menu(Client clients[])
     } while (option != 0);
 }
 
-void sort_by_total_spent(Client clients[])                              // WORKING // NOTE - AT LEAST IT SEEMS TO BE
+void sort_by_total_spent(Client clients[])
 {
     clear_screen();
     printf("Sort by total spent:\n\n");
@@ -384,7 +384,7 @@ void save_as_csv_menu(Client clients[])
 }
 
 // --- --- client management menu functions --- ---
-void edit_client_menu(Client clients[])                                      // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_client_menu(Client clients[])
 {
     clear_screen();
     int customer_id = validate_customer_id(clients), option;
@@ -399,12 +399,12 @@ void edit_client_menu(Client clients[])                                      // 
     } while (option != 0);
 }
 
-void add_purchase(Client clients[])                                     // WORKING // NOTE - WILL BE REWORKED
+void add_purchase(Client clients[])
 {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     clear_screen();
-    printf("Add purchase\n");                                           // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("Add purchase\n");
     int customer_id = validate_customer_id(clients);
     printf("Purchase value: ");
     float purchase_value = validate_float();
@@ -429,55 +429,9 @@ void add_purchase(Client clients[])                                     // WORKI
     clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].store.address[strcspn(clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].store.address, "\n")] = '\0';
     if (clients[customer_id - 1].has_card == true)
     {
-        purchase_value -= purchase_value * DISCOUNT;
+        purchase_value -= (float) (purchase_value * DISCOUNT);
         printf("Discount applied, the purchase value is now: %.2f\n", purchase_value);
-        if (clients[customer_id - 1].card.vouchers > 0)
-        {
-            while (1)
-            {
-                printf("You have %d vouchers, do you want to use them? (y/n)", clients[customer_id - 1].card.vouchers);
-                char answer;
-                scanf("%c", &answer);
-                clear_buffer();
-                if (answer == 'y' || answer == 'Y')
-                {
-                    printf("How many vouchers do you want to use? ");
-                    int vouchers = validate_integer();
-                    clear_buffer();
-                    if (vouchers > clients[customer_id - 1].card.vouchers)
-                    {
-                        printf("Not enough vouchers.\n");
-                        insert_any_key();
-                    }
-                    else
-                    {
-                        purchase_value -= (float)vouchers * VOUCHER_VALUE;
-                        if (purchase_value < 0)
-                        {
-                            purchase_value = 0;
-                            printf("Voucher(s) used, you are not entitled to change.\n");
-                            clients[customer_id - 1].card.spent_vouchers += vouchers;
-                        }
-                        else
-                        {
-                            printf("Voucher(s) used, the purchase value is now: %.2f\n", purchase_value);
-                            clients[customer_id - 1].card.spent_vouchers += vouchers;
-                        }
-                        break;
-                    }
-                }
-                else if (answer == 'n' || answer == 'N')
-                {
-                    printf("Voucher(s) not used.\n");
-                    break;
-                }
-                else
-                {
-                    printf("Invalid answer.\n");
-                    insert_any_key();
-                }
-            }
-        }
+        if (clients[customer_id - 1].card.vouchers > 0) purchase_value = ask_user_vouchers(clients, purchase_value, customer_id);
         clients[customer_id - 1].card.total_spent += purchase_value;
         clients[customer_id - 1].card.vouchers = (int)(clients[customer_id - 1].card.total_spent / 50.0 - clients[customer_id - 1].card.spent_vouchers);
     }else clients[customer_id - 1].card.total_spent += purchase_value;
@@ -487,11 +441,10 @@ void add_purchase(Client clients[])                                     // WORKI
     clients[customer_id - 1].card.purchases[clients[customer_id - 1].card.purchase_counter].year = tm.tm_year + 1900;
     clients[customer_id - 1].card.purchase_counter++;
     save_clients_bin(clients, read_counter_bin());
-
     insert_any_key();
 }
 
-void list_purchases(Client clients[])                                   // WORKING // NOTE - AT LEAST IT SEEMS TO BE
+void list_purchases(Client clients[])
 {
     clear_screen();
     printf("List purchases\n");
@@ -507,18 +460,18 @@ void list_purchases(Client clients[])                                   // WORKI
     insert_any_key();
 }
 
-void purchase_details(Client clients[])                                 // WORKING // NOTE - AT LEAST IT SEEMS TO BE
+void purchase_details(Client clients[])
 {
     clear_screen();
     printf("Purchase details\n");
     int customer_id = validate_customer_id(clients);
     printf("Total ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent);
-    printf("Average ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent / clients[customer_id - 1].card.purchase_counter);
+    printf("Average ammount spent: %.2f\n", (float)clients[customer_id - 1].card.total_spent / (float)clients[customer_id - 1].card.purchase_counter);
     printf("Spent vouchers: %d\n", clients[customer_id - 1].card.spent_vouchers);
     insert_any_key();
 }
 
-void verify_vouchers(Client clients[])                                  // WORKING // NOTE - AT LEAST IT SEEMS TO BE
+void verify_vouchers(Client clients[])
 {
     clear_screen();
     printf("Verify vouchers\n");
@@ -528,7 +481,7 @@ void verify_vouchers(Client clients[])                                  // WORKI
 }
 
 // --- --- edit client menu functions --- ---
-void edit_name(Client clients[], int customer_id)                       // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_name(Client clients[], int customer_id)
 {
     clear_screen();
     printf("Edit name\n");
@@ -540,7 +493,7 @@ void edit_name(Client clients[], int customer_id)                       // WORKI
     client_management_menu(clients);
 }
 
-void edit_phone(Client clients[], int customer_id)                      // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_phone(Client clients[], int customer_id)
 {
     clear_screen();
     printf("Edit phone\n");
@@ -553,7 +506,7 @@ void edit_phone(Client clients[], int customer_id)                      // WORKI
     client_management_menu(clients);
 }
 
-void edit_email(Client clients[], int customer_id)                      // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_email(Client clients[], int customer_id)
 {
     clear_screen();
     printf("Edit email\n");
@@ -566,7 +519,7 @@ void edit_email(Client clients[], int customer_id)                      // WORKI
     client_management_menu(clients);
 }
 
-void edit_nif(Client clients[], int customer_id)                        // WORKING // NOTE - MAY NEED TO BE REWORKED
+void edit_nif(Client clients[], int customer_id)
 {
     clear_screen();
     printf("Edit NIF\n");
@@ -579,7 +532,7 @@ void edit_nif(Client clients[], int customer_id)                        // WORKI
     client_management_menu(clients);
 }
 
-void reactivate_card(Client clients[], int customer_id)                 // WORKING // NOTE - MAY NEED TO BE REWORKED
+void reactivate_card(Client clients[], int customer_id)
 {
     clear_screen();
     printf("Reactivate card\n");
@@ -591,7 +544,7 @@ void reactivate_card(Client clients[], int customer_id)                 // WORKI
 }
 
 // --- --- save as csv menu functions --- ---
-void save_1_store(Client clients[])                                     // WORKING // NOTE - MAY NEED TO BE REWORKED
+void save_1_store(Client clients[])
 {
     clear_screen();
     printf("Save 1 store\n");  
@@ -629,10 +582,10 @@ void save_1_store(Client clients[])                                     // WORKI
     insert_any_key();
 }
 
-void save_all_stores(Client clients[])                                  // WORKING // NOTE - MAY NEED TO BE REWORKED
+void save_all_stores(Client clients[])
 {
     clear_screen();
-    printf("Save all stores\n");                                        // TODO // FIXME - THIS LINE MAY NEED TO BE REWORKED OR REMOVED
+    printf("Save all stores\n");
     struct tm start_date, end_date;
     printf("Select the time interval");
     select_time_interval(&start_date, &end_date);
@@ -659,26 +612,26 @@ void save_all_stores(Client clients[])                                  // WORKI
 }
 
 // --- --- utility functions --- ---
-void clear_buffer()                                                     // DONE
+void clear_buffer()
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void insert_any_key()                                                   // DONE
+void insert_any_key()
 {
     printf("Press any key to continue...");
     getchar();
 }
 
-void invalid_option()                                                   // DONE
+void invalid_option()
 {
     clear_screen();
     printf("Invalid option!\n");
     insert_any_key();
 }
 
-void program_exit(Client clients[])                                     // DONE
+void program_exit(Client clients[])
 {
     clear_screen();
     free(clients);
@@ -686,7 +639,7 @@ void program_exit(Client clients[])                                     // DONE
     exit(0);
 }
 
-int validate_integer()                                                  // DONE
+int validate_integer()
 {
     int option;
     char input[50];
@@ -697,7 +650,7 @@ int validate_integer()                                                  // DONE
     return option;
 }
 
-float validate_float()                                                  // DONE
+float validate_float()
 {
     float option;
     char input[50];
@@ -708,7 +661,7 @@ float validate_float()                                                  // DONE
     return option;
 }
 
-void select_date(struct tm *date)                                       // DONE
+void select_date(struct tm *date)
 {
     bool is_valid_date = false;
     while (!is_valid_date) {
@@ -723,7 +676,7 @@ void select_date(struct tm *date)                                       // DONE
     }
 }
 
-int validate_date(int day, int month, int year)                         // DONE
+int validate_date(int day, int month, int year)
 {
     if (year < 1900) return false;
     if (month < 1 || month > 12) return false;
@@ -731,7 +684,7 @@ int validate_date(int day, int month, int year)                         // DONE
     return true;
 }
 
-bool is_leap_year(int year)                                             // DONE
+bool is_leap_year(int year)
 {
     if (year % 4 == 0) {
         if (year % 100 != 0 || year % 400 == 0) return true;
@@ -739,7 +692,7 @@ bool is_leap_year(int year)                                             // DONE
     } else return false;
 }
 
-int get_max_day(int month, int year)                                    // DONE
+int get_max_day(int month, int year)
 {
     switch (month) {
         case 2: return is_leap_year(year) ? 29 : 28;
@@ -751,7 +704,7 @@ int get_max_day(int month, int year)                                    // DONE
     }
 }
 
-bool is_date_in_range(struct tm date, struct tm start, struct tm end)   // DONE
+bool is_date_in_range(struct tm date, struct tm start, struct tm end)
 {
     if (!is_year_in_range(date, start, end)) return false;
     if (!is_month_in_range(date, start, end)) return false;
@@ -759,12 +712,12 @@ bool is_date_in_range(struct tm date, struct tm start, struct tm end)   // DONE
     return true;
 }
 
-bool is_year_in_range(struct tm date, struct tm start, struct tm end)   // DONE
+bool is_year_in_range(struct tm date, struct tm start, struct tm end)
 {
     return date.tm_year >= start.tm_year && date.tm_year <= end.tm_year;
 }
 
-bool is_month_in_range(struct tm date, struct tm start, struct tm end)  // DONE
+bool is_month_in_range(struct tm date, struct tm start, struct tm end)
 {
     if (date.tm_year == start.tm_year) {
         return date.tm_mon >= start.tm_mon;
@@ -775,7 +728,7 @@ bool is_month_in_range(struct tm date, struct tm start, struct tm end)  // DONE
     }
 }
 
-bool is_day_in_range(struct tm date, struct tm start, struct tm end)    // DONE
+bool is_day_in_range(struct tm date, struct tm start, struct tm end)
 {
     if (date.tm_year == start.tm_year && date.tm_mon == start.tm_mon) {
         return date.tm_mday >= start.tm_mday;
@@ -786,7 +739,7 @@ bool is_day_in_range(struct tm date, struct tm start, struct tm end)    // DONE
     }
 }
 
-void select_time_interval(struct tm* start_date, struct tm* end_date)   // DONE
+void select_time_interval(struct tm* start_date, struct tm* end_date)
 {
     bool is_valid_interval = false;
     printf("Select the time interval");
@@ -807,13 +760,13 @@ void select_time_interval(struct tm* start_date, struct tm* end_date)   // DONE
     }
 }
 
-void set_purchase_counter(Client clients[], int client_id)              // DONE
+void set_purchase_counter(Client clients[], int client_id)
 {
     for (int i = 0; i < MAX_PURCHASES; i++) clients[client_id - 1].card.purchase_counter = 0;
     save_clients_bin(clients, read_counter_bin());
 }
 
-void save_counter_bin(int counter)                                      // DONE // NOTE: WORKING BUT MAY CHANGE LATER
+void save_counter_bin(int counter)
 {
     FILE *save_bin;
     save_bin = fopen("counter.bin", "wb");
@@ -826,7 +779,7 @@ void save_counter_bin(int counter)                                      // DONE 
     fclose(save_bin);
 }
 
-int read_counter_bin()                                                  // DONE // NOTE: WORKING BUT MAY CHANGE LATER
+int read_counter_bin()
 {
     FILE *read_bin;
     int counter;
@@ -840,7 +793,7 @@ int read_counter_bin()                                                  // DONE 
     return counter;
 }
 
-void save_clients_bin(Client clients[], int counter)                    // DONE // NOTE: WORKING BUT MAY CHANGE LATER
+void save_clients_bin(Client clients[], int counter)
 {
     FILE *save_bin;
     save_bin = fopen("clients.bin", "wb");
@@ -853,7 +806,7 @@ void save_clients_bin(Client clients[], int counter)                    // DONE 
     fclose(save_bin);
 }
 
-Client* read_clients_bin(int* counter)                                  // DONE // NOTE: WORKING BUT MAY CHANGE LATER
+Client* read_clients_bin(int* counter)
 {
     FILE *read_bin;
     Client* clients;
@@ -877,7 +830,7 @@ Client* read_clients_bin(int* counter)                                  // DONE 
     return clients;
 }
 
-void set_clients(Client clients[])                                      // DONE // NOTE: WORKING BUT MAY CHANGE LATER
+void set_clients(Client clients[])
 {
     int counter = read_counter_bin();
     Client* read_clients = read_clients_bin(&counter);
@@ -887,18 +840,21 @@ void set_clients(Client clients[])                                      // DONE 
     free(read_clients);
 }
 
-int validate_customer_id(Client clients[])                              // DONE
+int validate_customer_id()
 {
-    printf("Select the customer ID: ");
-    int customer_id = validate_integer();
-    clear_buffer();
-    if (customer_id > read_counter_bin() || customer_id < 1)
+    do
     {
-        printf("Invalid customer ID.\n");
-        insert_any_key();
-        main_menu(clients);
-    }
-    return customer_id;
+        printf("Select the customer ID: ");
+        int customer_id = validate_integer();
+        clear_buffer();
+        if (customer_id > read_counter_bin() || customer_id < 1)
+        {
+            printf("Invalid customer ID.\n");
+            insert_any_key();
+            continue;
+        }
+        return customer_id;
+    } while (1);
 }
 
 void search_store(Client client, Purchase purchase, struct tm start_date, struct tm end_date, FILE * file, bool flag)
@@ -916,7 +872,7 @@ void search_store(Client client, Purchase purchase, struct tm start_date, struct
 
 void print_1_store(Client client, Purchase purchase, FILE * file)
 {
-    if(client.has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d\n", purchase.day, purchase.month, purchase.year, purchase.value, client.card.customer_id + 1, purchase.store.name, purchase.store.address);
+    if(client.has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d\n", purchase.day, purchase.month, purchase.year, purchase.value, client.card.customer_id + 1);
     else fprintf(file, "%d/%d/%d,%.2f,\n", purchase.day, purchase.month, purchase.year, purchase.value);
 }
 
@@ -924,4 +880,108 @@ void print_all_stores(Client client, Purchase purchase, FILE * file)
 {
     if(client.has_card == true) fprintf(file, "%d/%d/%d,%.2f,%d,%s,%s\n", purchase.day, purchase.month, purchase.year, purchase.value, client.card.customer_id + 1, purchase.store.name, purchase.store.address);
     else fprintf(file, "%d/%d/%d,%.2f,,%s,%s\n", purchase.day, purchase.month, purchase.year, purchase.value, purchase.store.name, purchase.store.address);
+}
+
+float ask_user_vouchers(Client clients[], float purchase_value, int customer_id)
+{
+    while (1)
+    {
+        printf("You have %d vouchers, do you want to use them? (y/n)", clients[customer_id - 1].card.vouchers);
+        char answer;
+        scanf("%c", &answer);
+        clear_buffer();
+        if (answer == 'y' || answer == 'Y')
+        {
+            printf("How many vouchers do you want to use? ");
+            int vouchers = validate_integer();
+            clear_buffer();
+            if (vouchers > clients[customer_id - 1].card.vouchers)
+            {
+                printf("Not enough vouchers.\n");
+                insert_any_key();
+            }
+            if (vouchers <= 0)
+            {
+                printf("Invalid number of vouchers.\n");
+                insert_any_key();
+            }
+            else
+            {
+                purchase_value -= (float)vouchers * VOUCHER_VALUE;
+                purchase_value = apply_vouchers(clients, purchase_value, customer_id, vouchers);
+                break;
+            }
+        }
+        else if (answer == 'n' || answer == 'N')
+        {
+            printf("Voucher(s) not used.\n");
+            break;
+        }
+        else
+        {
+            printf("Invalid answer.\n");
+            insert_any_key();
+        }
+    }
+    return purchase_value;
+}
+
+float apply_vouchers(Client clients[], float purchase_value, int customer_id, int vouchers)
+{
+    if (purchase_value < 0)
+    {
+        purchase_value = 0;
+        printf("Voucher(s) used, you are not entitled to change.\n");
+        clients[customer_id - 1].card.spent_vouchers += vouchers;
+    }
+    else
+    {
+        printf("Voucher(s) used, the purchase value is now: %.2f\n", purchase_value);
+        clients[customer_id - 1].card.spent_vouchers += vouchers;
+    }
+    return purchase_value;
+}
+
+int validate_phone_number(Client clients[], int counter)
+{
+    while (1)
+    {
+        bool flag = true;
+        printf("Phone: ");
+        clients[counter].phone = validate_integer();
+        clear_buffer();
+        for (int i = 0; i < counter; i++)
+        {
+            if (clients[i].phone == clients[counter].phone)
+            {
+                flag = false;
+                printf("Phone number already registered!\n");
+            }
+        }
+        if (clients[counter].phone >= 900000000 && clients[counter].phone <= 999999999) 
+            if (flag == true) return clients[counter].phone;
+        if (flag == true) printf("Invalid phone number!\n");
+    }
+}
+
+int validate_nif(Client clients[], int counter)
+{
+    while (1)
+    {
+        bool flag = true;
+        printf("NIF: ");
+        clients[counter].nif = validate_integer();
+        clear_buffer();
+        for (int i = 0; i < counter; i++)
+        {
+            if (clients[i].nif == clients[counter].nif)
+            {
+                flag = false;
+                printf("NIF already registered!\n");
+            }
+        }
+        if (clients[counter].nif >= 100000000 && clients[counter].nif <= 999999999)
+            if (flag == true) return clients[counter].nif;
+        if (flag == true) printf("Invalid NIF!\n");
+    }
 }
