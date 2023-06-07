@@ -1,5 +1,9 @@
 # Ignored folders
 .vscode
+build
+.codescene
+clients.bin
+counter.bin
 
 # Prerequisites
 *.d
