@@ -465,8 +465,8 @@ void purchase_details(Client clients[])
     clear_screen();
     printf("Purchase details\n");
     int customer_id = validate_customer_id(clients);
-    printf("Total ammount spent: %.2f\n", clients[customer_id - 1].card.total_spent);
-    printf("Average ammount spent: %.2f\n", (float)clients[customer_id - 1].card.total_spent / (float)clients[customer_id - 1].card.purchase_counter);
+    printf("Total amount spent: %.2f\n", clients[customer_id - 1].card.total_spent);
+    printf("Average amount spent: %.2f\n", (float)clients[customer_id - 1].card.total_spent / (float)clients[customer_id - 1].card.purchase_counter);
     printf("Spent vouchers: %d\n", clients[customer_id - 1].card.spent_vouchers);
     insert_any_key();
 }
@@ -714,29 +714,26 @@ bool is_date_in_range(struct tm date, struct tm start, struct tm end)
 
 bool is_year_in_range(struct tm date, struct tm start, struct tm end)
 {
-    return date.tm_year >= start.tm_year && date.tm_year <= end.tm_year;
+    if (date.tm_year >= start.tm_year && date.tm_year <= end.tm_year) return true;
+    else return false;
 }
 
 bool is_month_in_range(struct tm date, struct tm start, struct tm end)
 {
-    if (date.tm_year == start.tm_year) {
-        return date.tm_mon >= start.tm_mon;
-    } else if (date.tm_year == end.tm_year) {
-        return date.tm_mon <= end.tm_mon;
-    } else {
-        return true;
-    }
+    if (date.tm_year == start.tm_year)
+        if (date.tm_mon < start.tm_mon) return false;
+    if (date.tm_year == end.tm_year)
+        if (date.tm_mon > end.tm_mon) return false;
+    return true;
 }
 
 bool is_day_in_range(struct tm date, struct tm start, struct tm end)
 {
-    if (date.tm_year == start.tm_year && date.tm_mon == start.tm_mon) {
-        return date.tm_mday >= start.tm_mday;
-    } else if (date.tm_year == end.tm_year && date.tm_mon == end.tm_mon) {
-        return date.tm_mday <= end.tm_mday;
-    } else {
-        return true;
-    }
+    if (date.tm_year == start.tm_year && date.tm_mon == start.tm_mon)
+        if (date.tm_mday < start.tm_mday) return false;
+    if (date.tm_year == end.tm_year && date.tm_mon == end.tm_mon)
+        if (date.tm_mday > end.tm_mday) return false;
+    return true;
 }
 
 void select_time_interval(struct tm* start_date, struct tm* end_date)
